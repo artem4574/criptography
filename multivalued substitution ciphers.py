@@ -130,3 +130,5 @@ def Vigenere_2():
     else:
         print("Error in select!")
         exit()
+
+print(Vigenere_2())

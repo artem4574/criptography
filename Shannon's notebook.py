@@ -5,7 +5,7 @@ def digitization(open_text, result = []):
     for i in range(len(open_text)): result.append(listalf.index(open_text[i])+1)
     return result
 
-
+print(digitization('один'))
 def undigitization(ciphertext, result = []):
     for i in range(len(ciphertext)): result.append(listalf[ciphertext[i]-1])
     return result
