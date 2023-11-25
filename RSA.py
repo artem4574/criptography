@@ -62,15 +62,21 @@ def decrypt(pk, ciphertext):
 
 
 p = int(input(" - Enter a prime number: "))
-q = int(input(" - Enter another prime number (not one you entered above): "))
+q = int(input(" - Enter another prime number: "))
 
 public, private = generate_key_pair(p, q)
 
-print(" - Your public key is ", public, " and your private key is ", private)
+print(" - Public key (E, N) ", public, " \n - Private key (D):", private)
 
-message = input(" - Enter a message to encrypt with your public key: ")
+message = input(" - Enter a message: ")
 encrypted_msg = encrypt(public, message.replace(' ', ''))
 
-print(" - Your encrypted message is: ", ''.join(map(lambda x: str(x), encrypted_msg)))
-print(" - Decrypting message with private key ", private, " . . .")
+print(" - Encrypted message: ", ''.join(map(lambda x: str(x), encrypted_msg)))
+
 print(" - Your message is: ", decrypt(private, encrypted_msg))
+
+
+p = int(input(" - Enter P(prime): "))
+q = int(input(" - Enter Q(another prime): "))
+n = p * q
+phi = (p-1) * (q-1)
