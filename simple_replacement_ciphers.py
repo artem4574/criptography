@@ -66,7 +66,7 @@ def Polybi_square():
             if k % 5 == 0: print(" ", end='')
         print()
 
-
+print(((24**9 * 62**8)%67)%11)
 
 
 

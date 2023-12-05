@@ -130,5 +130,6 @@ def Vigenere_2():
     else:
         print("Error in select!")
         exit()
+print((18**11) % 67)
 
 print(Vigenere_2())

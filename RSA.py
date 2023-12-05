@@ -1,82 +1,57 @@
-import random
+from typing import List
+
+alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
+def euclid(a: int, b: int) -> List[int]:
+    res: List[int] = []
+    while a != 0 and b != 0:
+        if a > b:
+            res.append(a//b)
+            a = a % b
+        else:
+            res.append(b//a)
+            b = b % a
+    return res
 
 
-def gcd(a, b):
-    while b != 0:
-        a, b = b, a % b
-    return a
+def eq(a: int, b: int, m: int) -> int:
+    q: List[int] = euclid(a, m)
+    if (m < a): q.insert(0, 0)
+    P: List = [1, q[0]]
+    for i in range(1, len(q)): P.append(P[i]*q[i]+P[i-1])
+    return ((-1)**(len(q) - 1) * P[-2] * b) % m
 
-
-def egcd(a, b):
-    if a == 0:
-        return (b, 0, 1)
-    else:
-        g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
-
-
-def mod_inverse(a, m):
-    g, x, y = egcd(a, m)
-    if g != 1:
-        raise Exception('modular inverse does not exist')
-    else:
-        return x % m
-
-
-def is_prime(num):
-    if num == 2:
-        return True
-    if num < 2 or num % 2 == 0:
-        return False
-    for n in range(3, int(num**0.5)+2, 2):
-        if num % n == 0:
-            return False
-    return True
-
-
-def generate_key_pair(p, q):
-    if not (is_prime(p) and is_prime(q)): raise ValueError('Both numbers must be prime.')
-    elif p == q: raise ValueError('p and q cannot be equal')
-    n = p * q
-    phi = (p-1) * (q-1)
-    e = random.randrange(1, phi)
-    g = gcd(e, phi)
-    while g != 1:
-        e = random.randrange(1, phi)
-        g = gcd(e, phi)
-    d = mod_inverse(e, phi)
-    return ((e, n), (d, n))
-
-
-def encrypt(pk, plaintext):
-    key, n = pk
-    cipher = [pow(ord(char), key, n) for char in plaintext]
-    return cipher
-
-
-def decrypt(pk, ciphertext):
-    key, n = pk
-    aux = [str(pow(char, key, n)) for char in ciphertext]
-    plain = [chr(int(char2)) for char2 in aux]
-    return ''.join(plain)
-
-
-p = int(input(" - Enter a prime number: "))
-q = int(input(" - Enter another prime number: "))
-
-public, private = generate_key_pair(p, q)
-
-print(" - Public key (E, N) ", public, " \n - Private key (D):", private)
-
-message = input(" - Enter a message: ")
-encrypted_msg = encrypt(public, message.replace(' ', ''))
-
-print(" - Encrypted message: ", ''.join(map(lambda x: str(x), encrypted_msg)))
-
-print(" - Your message is: ", decrypt(private, encrypted_msg))
-
+def digitization(open_text, result = []):
+    for i in range(len(open_text)): result.append(alphabet.index(open_text[i])+1)
+    return result
 
 p = int(input(" - Enter P(prime): "))
 q = int(input(" - Enter Q(another prime): "))
 n = p * q
 phi = (p-1) * (q-1)
+E = int(input(" - Enter E: "))
+D = eq(E, 1, phi)
+
+text = input(" - Enter a text: ")
+
+print(""" Select an action: 
+    1. Encryption 
+    2. Decryption""")
+choose: int = int(input())
+if choose == 1:
+
+    digit_text = digitization(text.replace(' ', ''))
+    ciphertext = []
+
+    for i in range(len(digit_text)): ciphertext.append((digit_text[i] ** E) % n)
+    for i in ciphertext:
+        print(i, "", end="")
+    print()
+if choose == 2:
+    text: List[int] = text.split()
+    result_text = ""
+    for i in text: result_text += alphabet[((int(i) ** D) % n) - 1]
+    print(result_text)
+    print()
+else:
+     print("Error in select!")
+     exit()
