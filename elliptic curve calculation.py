@@ -19,7 +19,7 @@ def euler_func(num):
     return amount
 
 
-a = 1
+'''a = 1
 b = 3
 p = 41
 
@@ -82,17 +82,17 @@ for j in range(len(array_of_points)):
         points_map[k][j] = (int(x_r), int(y_r))
         #print(x_p, y_p, x_q, y_q, x_r, y_r, delta)
 
-'''for i in range(p-1):
+for i in range(p-1):
     print(i+1, "  ",end='')
     for j in range(len(array_of_points)):
         print(points_map[i][j], " ", end='')
-    print()'''
-print(DataFrame(points_map))
-
+    print()
+print(DataFrame(points_map))'''
 
 def composition(point, k, a, p):
     ans_point = point
     delta = (((3 * point[0] ** 2 + a) % p) / ((2 * point[1]) % p)) % p
+    if delta % 1 != 0: delta = ((3 * (ans_point[0]**2) + a) % p) * ((((2 * ans_point[1]) % p) ** (euler_func(p)-1)) % p) % p
     x = (delta ** 2 - 2 * ans_point[0]) % p
     y = (delta * (ans_point[0] - x) - ans_point[1]) % p
     ans_point = [int(x), int(y)]
@@ -126,10 +126,12 @@ def composition(point, k, a, p):
             x_r = (delta ** 2 - x_p - x_q) % p
             y_r = (((delta * (x_p - x_r)) % p) - y_p) % p
             ans_point = (int(x_r), int(y_r))
+ 
     if type(ans_point) is list:
-        print("Composition = [", k, "]G = (", ans_point[0], ",", ans_point[1], ")", sep = '' )
+        print("Composition = [", k, "]", "(", point[0], ",", point[1], ")", " = (", ans_point[0], ",", ans_point[1], ")", sep = '' )
     else: 
         print("Composition = [", k, "]G = ", ans_point , sep = '' )
-composition([6,6], 144, 1, 11)
+
+composition([0,10], 4, 1, 11)
 
 
