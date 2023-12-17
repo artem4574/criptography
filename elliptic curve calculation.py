@@ -126,12 +126,12 @@ def composition(point, k, a, p):
             x_r = (delta ** 2 - x_p - x_q) % p
             y_r = (((delta * (x_p - x_r)) % p) - y_p) % p
             ans_point = (int(x_r), int(y_r))
-            print(delta, ans_point)
-    if type(ans_point) is list:
-        print("Composition = [", k, "]", "(", point[0], ",", point[1], ")", " = (", ans_point[0], ",", ans_point[1], ")", sep = '' )
-    else: 
-        print("Composition = [", k, "]", "(", point[0], ",", point[1], ")", " = ", ans_point, sep = '' )
 
-composition([0,10], 5, 1, 11)
+    if type(ans_point) is list:
+        print("Composition: [", k, "]", "(", point[0], ",", point[1], ")", " = (", ans_point[0], ",", ans_point[1], ")", sep = '' )
+    else: 
+        print("Composition: [", k, "]", "(", point[0], ",", point[1], ")", " = ", ans_point, sep = '' )
+for i in range(2, 13):
+    composition([0,1], i, 1, 11)
 
 

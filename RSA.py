@@ -12,7 +12,8 @@ def euclid(a: int, b: int) -> List[int]:
             b = b % a
     return res
 
-
+print(3**59 % 60)
+print(22**27 % 77)
 def eq(a: int, b: int, m: int) -> int:
     q: List[int] = euclid(a, m)
     if (m < a): q.insert(0, 0)
@@ -30,7 +31,7 @@ n = p * q
 phi = (p-1) * (q-1)
 E = int(input(" - Enter E: "))
 D = eq(E, 1, phi)
-
+print(D)
 text = input(" - Enter a text: ")
 
 print(""" Select an action: 
