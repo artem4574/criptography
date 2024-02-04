@@ -18,8 +18,8 @@ def euler_func(num):
             amount += 1
     return amount
 
-
-'''a = 1
+'''
+a = 1
 b = 3
 p = 41
 
@@ -87,7 +87,8 @@ for i in range(p-1):
     for j in range(len(array_of_points)):
         print(points_map[i][j], " ", end='')
     print()
-print(DataFrame(points_map))'''
+print(DataFrame(points_map))
+'''
 
 def composition(point, k, a, p):
     ans_point = point
@@ -131,7 +132,8 @@ def composition(point, k, a, p):
         print("Composition: [", k, "]", "(", point[0], ",", point[1], ")", " = (", ans_point[0], ",", ans_point[1], ")", sep = '' )
     else: 
         print("Composition: [", k, "]", "(", point[0], ",", point[1], ")", " = ", ans_point, sep = '' )
-for i in range(2, 13):
-    composition([0,1], i, 1, 11)
+for i in range(2, 6):
+    composition([3,3], i, 1, 11)
+print(4*6**9 % 11)
 
 
