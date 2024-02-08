@@ -3,7 +3,7 @@ def generate_table(keyword):
     keyword, count = "".join(keyword.split()).upper(), 0
     from collections import OrderedDict
     string_table = "".join(OrderedDict.fromkeys(keyword + start_alphabet))
-    table = [[0]*6 for i in range(5)]
+    table = [[0]*6 for _ in range(5)]
     for i in range (5):
         for j in range(6):
             table[i][j] = string_table[count]

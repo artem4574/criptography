@@ -1,5 +1,21 @@
 import sys
 
+
+def decryption_format(dec_text):
+    dec_text = dec_text.replace('тчк', '.')
+    dec_text = dec_text.replace('зпт', ',')
+    dec_text = dec_text.replace('прб', ' ')
+    result = dec_text[0].upper() + dec_text[1:]
+    result_list = list(result)
+    for i in range(len(result_list)-3):
+        if result_list[i] == ".": 
+            result_list[i+2] = result_list[i+2].upper()
+    result = ""
+    for char in result_list:
+        result += char
+    return result
+
+
 def generate_alph_matrix(string_alph):
     alphabet = [[0]*len(string_alph) for i in range(len(string_alph))]
     for i in range(len(string_alph)):
@@ -28,17 +44,17 @@ def Trithemius_cipher(text, operation, answer = ""):
     if operation == 2:          
         for i in range(len(text)): answer+=alph[0][alph[i%32].index(text[i])]
 
-        answer = answer.replace('тчк', '.')
-        answer = answer.replace('зпт', ',')
+        result = decryption_format(answer)
 
         print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        for i in result: print(i, end='')
         print()
 
 
 def Belazo_cipher(text, operation, answer = ""):
     
-    key: str = str(input('Enter keyword(must not contain duplicate letters and start with A): '))
+    key: str = str(input('Enter keyword:'))
+
     alph = generate_alph_matrix('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 
     if operation==1:           
@@ -55,11 +71,10 @@ def Belazo_cipher(text, operation, answer = ""):
     if operation == 2:          
         for i in range(len(text)): answer+=alph[0][alph[alph[0].index(key[i%len(key)])].index(text[i])]
 
-        answer = answer.replace('тчк', '.')
-        answer = answer.replace('зпт', ',')
+        result = decryption_format(answer)
 
         print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        for i in result: print(i, end='')
         print()
 
 
@@ -85,11 +100,10 @@ def Vigenere(text, operation, answer = ""):
             answer+=alph[alph[alph[0].index(key[i%len(key)])].index(text[i])][0]
             key+=answer[i]
         
-        answer = answer.replace('тчк', '.')
-        answer = answer.replace('зпт', ',')
+        result = decryption_format(answer)
 
         print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        for i in result: print(i, end='')
         print()
 
 
@@ -117,17 +131,12 @@ def Vigenere_2(text, operation, answer = ""):
             answer += alph[alph[alph[0].index(key[i%len(key)])].index(text[i])][0]
             key += text[i]
         
-        answer = answer.replace('тчк', '.')
-        answer = answer.replace('зпт', ',')
+        result = decryption_format(answer)
 
         print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        for i in result: print(i, end='')
         print()
 
-# Importing platform library 
-from platform import python_version  
-# Getting Python interpreter version as a result 
-print("Current Version of Python interpreter we are using-", python_version()) 
 while (True):
 
     print("""Select a cipher: 
@@ -149,33 +158,42 @@ while (True):
                 1. Encryption 
                 2. Decryption""")
     operation: int = int(input())
-    
+
     text: str = str(input('Enter text: '))
-    text_format = str(text.replace(' ', ''))
-    for i in range(len(text_format)):
-        if text_format.find('.') != -1:
-            index = text_format.find('.')
-            str1_split1 = text_format[:index]
-            str1_split2 = text_format[index+1:]
-            text_format = str1_split1 + 'тчк' + str1_split2
-        if text_format.find(',') != -1:
-            index = text_format.find(',')
-            str1_split1 = text_format[:index]
-            str1_split2 = text_format[index+1:]
-            text_format = str1_split1 + 'зпт' + str1_split2
+    print()
+
+    if operation == 1:
+        for i in range(len(text)):
+            if text.find('.') != -1:
+                index = text.find('.')
+                str1_split1 = text[:index]
+                str1_split2 = text[index+1:]
+                text = str1_split1 + 'тчк' + str1_split2
+            if text.find(',') != -1:
+                index = text.find(',')
+                str1_split1 = text[:index]
+                str1_split2 = text[index+1:]
+                text = str1_split1 + 'зпт' + str1_split2
+            if text.find(' ') != -1:
+                index = text.find(' ')
+                str1_split1 = text[:index]
+                str1_split2 = text[index+1:]
+                text = str1_split1 + 'прб' + str1_split2
+            
+    else: text = text.replace(' ', '')
 
     if select == 1: 
-        Trithemius_cipher(text_format, operation)
+        Trithemius_cipher(text.lower(), operation)
         print()
 
     if select == 2: 
-        Belazo_cipher(text_format, operation)
+        Belazo_cipher(text.lower(), operation)
         print()
 
     if select == 3: 
-        Vigenere(text_format, operation)
+        Vigenere(text.lower(), operation)
         print()
     
     if select == 4: 
-        Vigenere_2(text_format, operation)
+        Vigenere_2(text.lower(), operation)
         print()

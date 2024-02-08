@@ -134,6 +134,6 @@ def composition(point, k, a, p):
         print("Composition: [", k, "]", "(", point[0], ",", point[1], ")", " = ", ans_point, sep = '' )
 for i in range(2, 6):
     composition([3,3], i, 1, 11)
-print(4*6**9 % 11)
+print(4*6**9 % 11) 
 
 
