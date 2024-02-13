@@ -1,3 +1,16 @@
+def decryption_format(dec_text):
+    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
+    result = dec_text[0].upper() + dec_text[1:]
+    result_list = list(result)
+    for i in range(len(result_list)-3):
+        if result_list[i] == ".":
+            result_list[i+2] = result_list[i+2].upper()
+    result = ""
+    for char in result_list:
+        result += char
+    return result
+
+
 def mirror_matrix_1(matrix):
     def reverse(row):
         return row[::-1]

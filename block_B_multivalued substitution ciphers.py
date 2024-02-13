@@ -2,9 +2,7 @@ import sys
 
 
 def decryption_format(dec_text):
-    dec_text = dec_text.replace('тчк', '.')
-    dec_text = dec_text.replace('зпт', ',')
-    dec_text = dec_text.replace('прб', ' ')
+    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
     result = dec_text[0].upper() + dec_text[1:]
     result_list = list(result)
     for i in range(len(result_list)-3):
