@@ -29,7 +29,7 @@ def mirror_matrix_2(matrix):
     return matrix
 
 
-def Cardano_grid(operation, text, k=0):
+def Cardano_grid(operation, text):
     result_text = ""
     if len(text) > 60:
         grid_10 = [
@@ -78,11 +78,7 @@ def Cardano_grid(operation, text, k=0):
                         if grid_10[j][10 - i - 1] == 1:
                             result_text += str(table_arr[i][j])
 
-            print("Encrypted text: ", end=' ')
-            for i in result_text:
-                print(i, end='')
-                k += 1
-                if k % 5 == 0: print(" ", end='')
+            print("Encrypted text: ", ' '.join(result_text[i: i + 5] for i in range(0, len(result_text), 5)))
             print()
 
         if operation == 2:                                             # decryption >= 60
@@ -197,12 +193,7 @@ def Cardano_grid(operation, text, k=0):
                 for j in range(10):
                     result_text += str(table_arr[i][j])
 
-            print("Encrypted text: ", end=' ')
-
-            for i in result_text:
-                print(i, end='')
-                k += 1
-                if k % 5 == 0: print(" ", end='')
+            print("Encrypted text: ", ' '.join(result_text[i: i + 5] for i in range(0, len(result_text), 5)))
             print()
 
         if operation == 2:                                            # decryption <= 60
@@ -249,50 +240,56 @@ def Cardano_grid(operation, text, k=0):
             print()
 
 
-def vertical_permutation(operation, text, k=0):
-    alphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
+def vertical_permutation(operation, text):
+
     key = input("Enter key: ")
     result_text = ""
 
-    if len(set(key)) != len(key):
-        print("Wrong key!")
+    if len(key) > len(text):
+        print("Wrong key")
         exit()
 
-    cols = len(key)
-    rows = int(len(text) / cols) + 1
+    letter_order = {chr(i): i - ord('а') + 1 for i in range(ord('а'), ord('я') + 1)}
+
+    result = [letter_order[char] for char in key]
+
+    key_list = [sorted(result).index(num) + 1 for num in result]
+
+    for i in range(len(key_list)):
+        key_list[i] -= 1
+        for j in range(0, i):
+            if key_list[j] == key_list[i]:
+                key_list[i] += 1
+
+    cols = len(key_list)
+    if len(text) % cols == 0: rows = (len(text) // cols)
+    else: rows = (len(text) // cols) + 1
 
     table = [[0] * cols for _ in range(rows)]
 
-    for i in range(rows):
-        for j in range(cols):
-            if len(text) != 0:
-                table[i][j] = text[0]
-                text = text[1:]
-            else:
-                table[i][j] = "я"
-
-    key_list = [0 for _ in range(len(key))]
-    key_set = [char for char in key]
-    counter = 0
-
-    for i in alphabet:
-        if i in key_set:
-            key_list[key_set.index(i)] = counter
-            counter += 1
-
     if operation == 1:
+
         for i in range(rows):
             for j in range(cols):
+                if len(text) != 0:
+                    table[i][j] = text[0]
+                    text = text[1:]
+                else:
+                    table[i][j] = "я"
+
+        for j in range(cols):
+            for i in range(rows):
                 result_text += table[i][key_list[j]]
 
-        print("Encrypted text: ", end=' ')
-        for i in result_text:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        print("Encrypted text: ", ' '.join(result_text[i: i + 5] for i in range(0, len(result_text), 5)))
         print()
 
     if operation == 2:
+
+        for j in range(cols):
+            for i in range(rows):
+                table[i][j] = text[0]
+                text = text[1:]
 
         for i in range(rows):
             for j in range(cols):

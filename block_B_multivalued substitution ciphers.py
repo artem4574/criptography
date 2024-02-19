@@ -15,7 +15,7 @@ def decryption_format(dec_text):
 
 
 def generate_alph_matrix(string_alph):
-    alphabet = [[0]*len(string_alph) for i in range(len(string_alph))]
+    alphabet = [[0]*len(string_alph) for _ in range(len(string_alph))]
     for i in range(len(string_alph)):
         for j in range(len(string_alph)):
             alphabet[i][j] = (string_alph[j+i-len(string_alph)])
@@ -24,23 +24,19 @@ def generate_alph_matrix(string_alph):
     return alphabet
 
 
-def Trithemius_cipher(text, operation, answer = ""):
+def Trithemius_cipher(text, operation, answer=""):
     
     alph = generate_alph_matrix('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 
     if operation == 1:        
-        k = 0  
-        for i in range(len(text)): answer+=alph[i%32][alph[0].index(text[i])]
 
-        print("Encrypted text: ", end=' ')
-        for i in answer:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        for i in range(len(text)): answer += alph[i % 32][alph[0].index(text[i])]
+
+        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer), 5)))
         print()
  
     if operation == 2:          
-        for i in range(len(text)): answer+=alph[0][alph[i%32].index(text[i])]
+        for i in range(len(text)): answer += alph[0][alph[i % 32].index(text[i])]
 
         result = decryption_format(answer)
 
@@ -49,21 +45,17 @@ def Trithemius_cipher(text, operation, answer = ""):
         print()
 
 
-def Belazo_cipher(text, operation, answer = ""):
+def Belazo_cipher(text, operation, answer=""):
     
     key: str = str(input('Enter keyword:'))
 
     alph = generate_alph_matrix('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 
     if operation==1:           
-        k = 0
+
         for i in range(len(text)): answer+=alph[alph[0].index(key[i%len(key)])][alph[0].index(text[i])]
 
-        print("Encrypted text: ", end=' ')
-        for i in answer:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer), 5)))
         print()
 
     if operation == 2:          
@@ -76,26 +68,23 @@ def Belazo_cipher(text, operation, answer = ""):
         print()
 
 
-def Vigenere(text, operation, answer = ""):
+def Vigenere(text, operation, answer=""):
    
     key: str = str(input('Enter key: '))
     alph = generate_alph_matrix('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 
     if operation == 1:          
-        k = 0
-        key += text[:-1]
-        for i in range(len(text)): answer+=alph[alph[0].index(key[i])][alph[0].index(text[i])]
 
-        print("Encrypted text: ", end=' ')
-        for i in answer:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        key += text[:-1]
+        for i in range(len(text)): answer += alph[alph[0].index(key[i])][alph[0].index(text[i])]
+
+        print("Encrypted text: ", ' '.join(answer[i: i+5] for i in range(0, len(answer), 5)))
         print()
 
-    if operation == 2:          
+    if operation == 2:
+
         for i in range(len(text)):
-            answer+=alph[alph[alph[0].index(key[i%len(key)])].index(text[i])][0]
+            answer += alph[alph[alph[0].index(key[i%len(key)])].index(text[i])][0]
             key+=answer[i]
         
         result = decryption_format(answer)
@@ -105,25 +94,21 @@ def Vigenere(text, operation, answer = ""):
         print()
 
 
-def Vigenere_2(text, operation, answer = ""):
+def Vigenere_2(text, operation, answer=""):
     
     key: str = str(input('Enter key: '))
     alph = generate_alph_matrix('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 
     if operation == 1:          
-        k = 0
+
         for i in range(len(text)):
             answer+=alph[alph[0].index(key[i])][alph[0].index(text[i])]
             key += answer[i]
 
-        print("Encrypted text: ", end=' ')
-        for i in answer:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer), 5)))
         print()
 
-    if operation == 2:       
+    if operation == 2:
 
         for i in range(len(text)):
             answer += alph[alph[alph[0].index(key[i%len(key)])].index(text[i])][0]
@@ -135,7 +120,8 @@ def Vigenere_2(text, operation, answer = ""):
         for i in result: print(i, end='')
         print()
 
-while (True):
+
+while True:
 
     print("""Select a cipher: 
              1.  Trithemius
@@ -148,7 +134,7 @@ while (True):
     if select == 5: 
         sys.exit()
 
-    if select not in [1,2,3,4,5]: 
+    if select not in [1, 2, 3, 4, 5]:
         print("Wrong select!")
         continue
 

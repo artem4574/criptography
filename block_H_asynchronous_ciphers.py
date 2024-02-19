@@ -3,6 +3,7 @@ import sympy
 import itertools
 from typing import List
 from collections import Counter
+
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
 text1 = [0,6,1, 0,6,8, 0,9,3, 1,0,4, 0,8,7, 1,1,1, 0,6,3, 0,7,4, 0,9,3, 0,7,1, 0,6,8, 1,1,1, 0,5,2, 0,4,1, 0,8,5, 1,5,5, 1,1,5, 1,5,4, 1,0,9, 1,1,7, 1,5,4, 0,5,4, 0,6,7, 1,1,7, 0,5,5, 
          0,9,0, 1,3,3, 1,5,5, 0,8,0, 1,1,9, 1,1,6, 0,7,8, 1,1,8, 0,8,8, 1,0,4, 1,4,0, 0,8,9, 0,5,7, 0,7,4, 1,8,6, 1,7,3, 2,4,3, 1,0,2, 1,0,1, 1,4,7, 1,3,2, 1,3,6, 2,0,8, 0,4,9,
@@ -91,32 +92,9 @@ for pair in pairs:
 print (''.join(result))
 '''
 # RSA
-from typing import List
+
 
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
-def euclid(a: int, b: int) -> List[int]:
-    res: List[int] = []
-    while a != 0 and b != 0:
-        if a > b:
-            res.append(a//b)
-            a = a % b
-        else:
-            res.append(b//a)
-            b = b % a
-    return res
-
-
-def eq(a: int, b: int, m: int) -> int:
-    q: List[int] = euclid(a, m)
-    if (m < a): q.insert(0, 0)
-    P: List = [1, q[0]]
-    for i in range(1, len(q)): P.append(P[i]*q[i]+P[i-1])
-    return ((-1)**(len(q) - 1) * P[-2] * b) % m
-
-def digitization(open_text, result = []):
-    for i in range(len(open_text)): result.append(alphabet.index(open_text[i])+1)
-    return result
-
 p = int(input(" - Enter P(prime): "))
 q = int(input(" - Enter Q(another prime): "))
 n = p * q

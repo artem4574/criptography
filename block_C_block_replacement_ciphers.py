@@ -40,9 +40,13 @@ def find_index(array, element):
         return None
 
 
-def Playfair_cipher(operation, text, answer="", k=0):
+def Playfair_cipher(operation, text, answer=""):
 
     key: str = str(input('Enter keyword(must not contain duplicate letters): '))
+    if len(key) != len(set(key)):
+        print("Wrong key!")
+        exit()
+
     table = generate_table(key)
 
     if operation == 1:  # encryption
@@ -80,11 +84,7 @@ def Playfair_cipher(operation, text, answer="", k=0):
                 answer += table[s_let_i][f_let_j]
                 continue
 
-        print("Encrypted text: ", end=' ')
-        for i in answer:
-            print(i, end='')
-            k += 1
-            if k % 5 == 0: print(" ", end='')
+        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer), 5)))
 
     if operation == 2:  # decryption
 
