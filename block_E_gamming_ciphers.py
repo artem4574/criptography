@@ -1,91 +1,21 @@
-from itertools import zip_longest
-import numpy
 import sys
+import math
 
 
 list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
              "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
 
 
-def xor(scr, register):
-    for_xor_scr = []  # массив единиц scrambler
-    for_xor_reg = []  # массив регистра
-    buffer = []       # буфер битов для xor
-    for i in range(len(scr)): for_xor_scr.append(int(scr[i]))
-    for i in range(len(register)): for_xor_reg.append(int(register[i]))
-    for i in range(len(scr)):
-        if for_xor_scr[i] == 1: buffer.append(for_xor_reg[i])
-    return str(numpy.bitwise_xor.reduce(buffer)) + register[:-1]
-
-
-def grouper(n, iterable, fillvalue=None):
-    args = [iter(iterable)] * n
-    return zip_longest(fillvalue=fillvalue, *args)
-
-
-def digitization_for_gamma(open_text):
-    dig_text = ""
-    for i in range(len(open_text)):
-        cipher = (list_alph.index(open_text[i]))
-        cipher = int(cipher) + 1
-        dig_text += (format(cipher, '06b'))
-    return dig_text
-
-
-def undigitization_for_gamma(d_text):
-    d_text = ' '.join(''.join(g) for g in grouper(6, d_text, ''))
-    d_array = d_text.split()
-    open_text = ""
-    # for i in d_array: print(i, " ", end='')
-    for i in d_array:
-        open_text += (list_alph[int(str(int(i)), 2) - 1])
-        # print(int(str(int(i)), 2), " ", end='')
-    return open_text
-
-
-def gamming(text, reg1, reg2, scrambler1, scrambler2):
-    result_str = ""
-    for i in range(len(text)):
-        ex_bit1 = reg1[len(reg1) - 1]
-        ex_bit2 = reg2[len(reg2) - 1]
-
-        code_bit = int(ex_bit1) ^ int(ex_bit2)
-        res_bit = int(text[i]) ^ code_bit
-
-        result_str += str(res_bit)
-        # print(reg1, " ", ex_bit1, " ", reg2, " ", ex_bit2, " ", code_bit, " ", text[i], " ", res_bit)
-
-        reg1 = xor(scrambler1, reg1)
-        reg2 = xor(scrambler2, reg2)
-
-    return result_str
-
-
-def digitization_for_Shannon(open_text, result=[]):
+def digitization_for_Shannon(open_text):
+    result = []
     for i in range(len(open_text)): result.append(list_alph.index(open_text[i]) + 1)
     return result
 
 
-def undigitization_for_Shannon(ciphertext, result=""):
+def undigitization_for_Shannon(ciphertext):
+    result = ""
     for i in range(len(ciphertext)): result += (list_alph[ciphertext[i] - 1])
     return result
-
-
-def encrypt_text_for_Shannon(text, gamma, encrypted_text=[]):
-    for i in range(len(text)):
-        encrypted_text.append((text[i] + gamma[i]) % 32)
-        #print(text[i], gamma[i])
-    return encrypted_text
-
-
-def decrypt_text_for_Shannon(text, gamma):
-    dec_text = [0] * len(text)
-    for i in range(len(text)):
-
-        if gamma[i] < text[i]: dec_text[i] = text[i] - gamma[i]
-        else: dec_text[i] = text[i] + 32 - gamma[i]
-
-    return dec_text
 
 
 def generate_gamma_for_Shannon(a, c, t0, length):
@@ -110,63 +40,45 @@ def decryption_format(dec_text):
     return result
 
 
-def RSLOS(operation, text):
-
-    scrambler1: str = str(input('Enter scrambler_1: '))
-    scrambler2: str = str(input('Enter scrambler_2: '))
-
-    reg1: str = str(input('Enter key_1: '))
-    reg2: str = str(input('Enter key_2: '))
-
-    if operation == 1:
-
-        d_text = digitization_for_gamma(text)
-        result_str = gamming(d_text, reg1, reg2, scrambler1, scrambler2)
-
-        print("Cipher text:")
-        result_str = ' '.join(''.join(g) for g in grouper(5, result_str, ''))
-        result_array = result_str.split()
-
-        for i in range(len(result_array)):
-            print(result_array[i], " ", end='')
-            if i % 15 == 14: print()
-
-    if operation == 2:
-
-        dig_text = gamming((text.replace(' ', '')), reg1, reg2, scrambler1, scrambler2)
-
-        print("Decrypted text: ", undigitization_for_gamma(dig_text))
-
-
-'''scrambler1 = 10110
-scrambler2 = 1001
-key1 = 10110
-key2 = 1001
-open text = одиндуракможетбольшеспрашиватьзптчемдесятьумныхответитьтчк
-dig_text = 001111000101001001001110000101010100010001000001001011001101001111000111000110010011000010001111001100011101011001000110010010010000010001000001011001001001000011000001010011011101001000010000010011011000000110001101000101000110010010100000010011011101010100001101001110011100010110001111010011000011000110010011001001010011011101010011011000001011
-encrypted text = 11000  01000  01101  10011  10111  10111  11110  11100  10101  00100  00111  11011  00110  11001  11001 00010  01010  10110  01100  00011  01100  00011  00000  00011  00111  11000  01010  10100  01111  10100  11000  11010  10011  00110  00100  00100  10001  00101  01000  10111  00101  00101  10111  00101  10010  11111  01011  11110  11010  01001  01000  11000  11001  01110  01100  11110  11111  10010  00011  11100   01001  01101  00001  01001  10000  01101  10111  10110  10010  000
-'''
-
-
 def Shannon_notebook(operation, text):
 
-    a, c, t0 = int(input("Enter the value of a (a % 4 = 1): ")), int(
-        input("Enter the value of c (с % 2 != 0): ")) % 32, int(input("Enter the value of T0: "))
+    a, c, t0 = int(input("Enter the value of a (a % 2 = 1): ")), int(
+        input("Enter the value of c (coprime with 32): ")) % 32, int(input("Enter the value of T0: "))
+
+    if a % 2 != 1 or math.gcd(c, 32) != 1:
+        print("Wrong key!")
+        exit()
+
+    # a, c, t0 = 5, 9, 14
+
+    digital_text = digitization_for_Shannon(text)
+
+    gen_gamma = generate_gamma_for_Shannon(a, c, t0, len(digital_text))
 
     if operation == 1:
 
-        ciphertext = undigitization_for_Shannon(encrypt_text_for_Shannon(digitization_for_Shannon(text),
-                                                generate_gamma_for_Shannon(a, c, t0, len(text))))
+        encrypted_text = []
+
+        for i in range(len(digital_text)): encrypted_text.append((digital_text[i] + gen_gamma[i]) % 32)
+
+        ciphertext = undigitization_for_Shannon(encrypted_text)
 
         print("Encrypted text: ", ' '.join(ciphertext[i: i + 5] for i in range(0, len(ciphertext), 5)))
         print()
 
     if operation == 2:
-        dec_text = undigitization_for_Shannon(decrypt_text_for_Shannon(digitization_for_Shannon(text),
-                                                generate_gamma_for_Shannon(a, c, t0, len(text))))
 
-        answer = decryption_format(dec_text)
-        while answer[-1] in ["я", "Я"]: answer = answer[:-1]
+        dec_text = [0] * len(digital_text)
+
+        for i in range(len(digital_text)):
+
+            if gen_gamma[i] < digital_text[i]: dec_text[i] = digital_text[i] - gen_gamma[i]
+
+            else: dec_text[i] = digital_text[i] + 32 - gen_gamma[i]
+
+        open_text = undigitization_for_Shannon(dec_text)
+
+        answer = decryption_format(open_text)
 
         print("Decrypted text: ", end=' ')
         for i in answer: print(i, end='')
@@ -177,14 +89,13 @@ while True:
 
     print("""Select a cipher: 
              1.  Shannon's notebook
-             2.  RSLOS
-             3.  Exit
+             2.  Exit
          """)
     select: int = int(input())
-    if select == 3:
+    if select == 2:
         sys.exit()
 
-    if select not in [1, 2, 3]:
+    if select not in [1, 2]:
         print("Wrong select!")
         continue
 
@@ -225,8 +136,4 @@ while True:
 
     if select == 1:
         Shannon_notebook(operation, text.lower())
-        print()
-
-    if select == 2:
-        RSLOS(operation, text.lower())
         print()
