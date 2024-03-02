@@ -1,128 +1,190 @@
 import random
 import sympy
-import itertools
+import sys
 from typing import List
-from collections import Counter
+
 
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
-text1 = [0,6,1, 0,6,8, 0,9,3, 1,0,4, 0,8,7, 1,1,1, 0,6,3, 0,7,4, 0,9,3, 0,7,1, 0,6,8, 1,1,1, 0,5,2, 0,4,1, 0,8,5, 1,5,5, 1,1,5, 1,5,4, 1,0,9, 1,1,7, 1,5,4, 0,5,4, 0,6,7, 1,1,7, 0,5,5, 
-         0,9,0, 1,3,3, 1,5,5, 0,8,0, 1,1,9, 1,1,6, 0,7,8, 1,1,8, 0,8,8, 1,0,4, 1,4,0, 0,8,9, 0,5,7, 0,7,4, 1,8,6, 1,7,3, 2,4,3, 1,0,2, 1,0,1, 1,4,7, 1,3,2, 1,3,6, 2,0,8, 0,4,9,
-         0,7,2, 0,9,7, 1,1,3, 1,0,4, 1,4,1, 1,6,3, 1,5,4, 2,2,1, 2,0,3, 1,2,9, 2,0,4]
-print(Counter(text1))
-def euclid(a: int, b: int) -> List[int]:
+
+
+def euclid(a: int, b: int):
     res: List[int] = []
     while a != 0 and b != 0:
         if a > b:
             res.append(a//b)
-            a = a % b
+            a %= b
         else:
             res.append(b//a)
-            b = b % a
+            b %= a
     return res
 
 
-def eq(a: int, b: int, m: int) -> int:
+def eq(a: int, b: int, m: int):
     q: List[int] = euclid(a, m)
-    if (m < a): q.insert(0, 0)
-    P: List = [1, q[0]]
-    for i in range(1, len(q)): P.append(P[i]*q[i]+P[i-1])
-    return ((-1)**(len(q) - 1) * P[-2] * b) % m
+    if m < a: q.insert(0, 0)
+    p: List = [1, q[0]]
+    for i in range(1, len(q)): p.append(p[i] * q[i] + p[i-1])
+    return ((-1)**(len(q) - 1) * p[-2] * b) % m
 
 
-
-def digitization(open_text, result = []):
-    for i in range(len(open_text)): result.append(alphabet.index(open_text[i])+1)
+def digitization(open_text):
+    result = []
+    for i in range(len(open_text)): result.append(alphabet.index(open_text[i]) + 1)
     return result
 
-print((17**5*15 % 37))
-P = int(input('Enter p(prime): '))
-x = int(input('Enter x(0 < x < p): '))
-g = int(input('Enter g(0 < g < p): '))
 
-M_i = digitization("один дурак может больше спрашивать зпт чем десять умных ответить тчк".replace(' ', ''))
-phi: int = P-1
-'''k1: int = sympy.randprime(3, phi)
-k2: int = sympy.randprime(3, k1)
-k3: int = sympy.randprime(k1, phi)'''
-k1 = 3
-k2 = 7
-k3 = 13
+def decryption_format(dec_text):
+    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
+    result = dec_text[0].upper() + dec_text[1:]
+    result_list = list(result)
+    for i in range(len(result_list) - 3):
+        if result_list[i] == ".":
+            result_list[i + 2] = result_list[i + 2].upper()
 
+    result = ""
+    for char in result_list: result += char
 
-Y = (g**x) % P
-#print("\n ", k1, k2, k3, Y)
-result_text = []
-choose_ai = 0
-for i in range(len(M_i)):
-    #choose_ai = random.randint(1,3)
-    choose_ai +=1
-    if choose_ai % 3 == 1:
-        a = (g**k1) % P
-        b = ((Y**k1)*M_i[i]) % P
-        result_text.append(a)
-        result_text.append(b)
-    if choose_ai % 3 == 2:
-        a = (g**k2) % P
-        b = ((Y**k2)*M_i[i]) % P
-        result_text.append(a)
-        result_text.append(b)
-    if choose_ai % 3 == 0:
-        a = (g**k3) % P
-        b = ((Y**k3)*M_i[i]) % P
-        result_text.append(a)
-        result_text.append(b)
-
-for i in result_text:
-    print(i, "", end="")
-
-print()
-
-'''
-ab: List[int] = [32, 33, 18, 10, 2, 23, 18, 7, 32, 5, 2, 36, 2, 7, 18, 6, 32, 34, 32, 18, 18, 26, 32, 1, 18, 21, 2, 9,
-                 32, 5, 18, 8, 2, 35, 32, 11, 18, 31, 18, 23, 2, 31, 32, 5, 32, 12, 32, 1, 18, 20, 18, 30, 2, 35, 32,
-                 3, 2, 5, 32, 21, 18, 12, 18, 28, 2, 7, 2, 33, 32, 29, 2, 19, 32, 16, 2, 5, 18, 24, 32, 11, 18, 28, 2,
-                 19, 2, 36, 18, 33, 32, 15, 18, 9, 2, 25, 32, 16, 2, 36, 32, 5, 32, 25, 2, 7, 18, 28, 18, 12, 32, 18]
-
-pairs: List[List[int]] = [ab[i:i + 2] for i in range(0, len(ab), 2)]
-
-result: List[str] = []
-for pair in pairs:
-    result.append(alphabet[eq(pair[0]**x, pair[1], P) - 1])
-
-print (''.join(result))
-'''
-# RSA
+    return result
 
 
-alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
-p = int(input(" - Enter P(prime): "))
-q = int(input(" - Enter Q(another prime): "))
-n = p * q
-phi = (p-1) * (q-1)
-E = int(input(" - Enter E: "))
-D = eq(E, 1, phi)
-print(D)
-text = input(" - Enter a text: ")
+def ElGamal(operation, text):
 
-print(""" Select an action: 
-    1. Encryption 
-    2. Decryption""")
-choose: int = int(input())
-if choose == 1:
+    p = int(input(f'Enter p(prime, > {len(text)}: '))
+    g = int(input(f'Enter 0 < g < {p}: '))
+    x = int(input(f'Enter 0 < x < {p}: '))
 
-    digit_text = digitization(text.replace(' ', ''))
-    ciphertext = []
+    m_i = digitization(text)
+    phi: int = p-1
 
-    for i in range(len(digit_text)): ciphertext.append((digit_text[i] ** E) % n)
-    for i in ciphertext:
-        print(i, "", end="")
+    if operation == 1:
+
+        k1: int = sympy.randprime(3, phi)
+        k2: int = sympy.randprime(3, k1)
+        k3: int = sympy.randprime(k1, phi)
+        # k1, k2, k3 = 3, 7, 13
+        y = (g ** x) % p
+        result_text = []
+        # choose_ai = 0
+        for i in range(len(m_i)):
+
+            choose_ai = random.randint(1, 3)
+            # choose_ai += 1
+            if choose_ai % 3 == 1:
+                a, b = (g ** k1) % p, ((y ** k1) * m_i[i]) % p
+                result_text.extend([a, b])
+
+            if choose_ai % 3 == 2:
+                a, b = (g ** k2) % p, ((y ** k2) * m_i[i]) % p
+                result_text.extend([a, b])
+
+            if choose_ai % 3 == 0:
+                a, b = (g ** k3) % p, ((y ** k3) * m_i[i]) % p
+                result_text.extend([a, b])
+
+        for i in result_text:
+            print(i, "", end="")
+        print()
+
+    if operation == 2:
+        ab: List[int] = [32, 33, 18, 10, 2, 23, 18, 7, 32, 5, 2, 36, 2, 7, 18, 6, 32, 34, 32, 18, 18, 26, 32, 1, 18, 21, 2, 9,
+                         32, 5, 18, 8, 2, 35, 32, 11, 18, 31, 18, 23, 2, 31, 32, 5, 32, 12, 32, 1, 18, 20, 18, 30, 2, 35, 32,
+                         3, 2, 5, 32, 21, 18, 12, 18, 28, 2, 7, 2, 33, 32, 29, 2, 19, 32, 16, 2, 5, 18, 24, 32, 11, 18, 28, 2,
+                         19, 2, 36, 18, 33, 32, 15, 18, 9, 2, 25, 32, 16, 2, 36, 32, 5, 32, 25, 2, 7, 18, 28, 18, 12, 32, 18]
+
+        pairs: List[List[int]] = [ab[i:i + 2] for i in range(0, len(ab), 2)]
+
+        result: List[str] = []
+        for pair in pairs:
+            result.append(alphabet[eq(pair[0] ** x, pair[1], p) - 1])
+
+        print(''.join(result))
+
+
+def RSA(operation, text):
+
+    p = int(input(" - Enter P(prime): "))
+    q = int(input(" - Enter Q(another prime): "))
+    n = p * q
+    phi = (p-1) * (q-1)
+    e = int(input(f" - Enter 1 < E < {phi}: "))
+    d = eq(e, 1, phi)
+
+    if operation == 1:
+
+        digit_text = digitization(text)
+        ciphertext = []
+
+        for i in range(len(digit_text)): ciphertext.append((digit_text[i] ** e) % n)
+
+        print("Encrypted text: ")
+        for i in ciphertext: print(i, " ", end='')
+        print()
+
+    if operation == 2:
+
+        text: List[int] = text.split()
+        result_text = ""
+
+        for i in text: result_text += alphabet[((int(i) ** d) % n) - 1]
+
+        answer = decryption_format(result_text)
+        print("Decrypted text: ", end=' ')
+        for i in answer: print(i, end='')
+        print()
+
+
+while True:
+
+    print("""Select a cipher: 
+             1.  RSA
+             2.  ElGamal
+             3.  Exit
+         """)
+    select: int = int(input())
+    if select == 3:
+        sys.exit()
+
+    if select not in [1, 2, 3]:
+        print("Wrong select!")
+        continue
+
+    print(""" Select an action: 
+                1. Encryption 
+                2. Decryption""")
+    operation: int = int(input())
+    if operation not in [1, 2, 3]:
+        print("Wrong select!")
+        continue
+
+    text: str = str(input('Enter text: '))
     print()
-if choose == 2:
-    text: List[int] = text.split()
-    result_text = ""
-    for i in text: result_text += alphabet[((int(i) ** D) % n) - 1]
-    print(result_text)
-    print()
-else:
-     print("Error in select!")
-     exit()
+
+    if operation == 1:
+
+        for i in range(len(text)):
+
+            if text.find('.') != -1:
+                index = text.find('.')
+                str1_split1 = text[:index]
+                str1_split2 = text[index + 1:]
+                text = str1_split1 + 'тчк' + str1_split2
+
+            if text.find(',') != -1:
+                index = text.find(',')
+                str1_split1 = text[:index]
+                str1_split2 = text[index + 1:]
+                text = str1_split1 + 'зпт' + str1_split2
+
+            if text.find(' ') != -1:
+                index = text.find(' ')
+                str1_split1 = text[:index]
+                str1_split2 = text[index + 1:]
+                text = str1_split1 + 'прб' + str1_split2
+
+    if select == 1:
+        RSA(operation, text.lower())
+        print()
+
+    if select == 2:
+        ElGamal(operation, text.lower())
+        print()
