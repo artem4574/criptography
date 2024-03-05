@@ -100,12 +100,15 @@ def point_addition(point_1: list, point_2: list, a, p):
 
 
 def GOSTR_34_10_94(operation, text):
+
     p = int(input(" - Enter P(prime): "))
     q = int(input(f" - Enter Q(simple multiplier of {p-1}): "))
     a = int(input(f" - Enter A(1 < A < {p - 1}, a ^ q mod p = 1): "))
     x = int(input(f" - Enter X( < {q}): "))
+
     y = (a ** x) % p
     m = hash_quad(text, q) if hash_quad(text, q) != 0 else 1
+
     if operation == 1:
         r, s = 0, 0
         while r <= 0:
@@ -122,6 +125,7 @@ def GOSTR_34_10_94(operation, text):
         z_1 = (s[1] * v) % q
         z_2 = ((q - s[0]) * v) % q
         u = (((a ** z_1) * (y ** z_2)) % p) % q
+
         if u == s[0]:
             print("The signature is approved!")
         else:

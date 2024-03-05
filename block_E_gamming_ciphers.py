@@ -45,7 +45,7 @@ def Shannon_notebook(operation, text):
     a, c, t0 = int(input("Enter the value of a (a % 2 = 1): ")), int(
         input("Enter the value of c (coprime with 32): ")) % 32, int(input("Enter the value of T0: "))
 
-    if a % 2 != 1 or math.gcd(c, 32) != 1:
+    if a % 2 != 1 or math.gcd(c, 32) != 1 or a % 4 == 1:
         print("Wrong key!")
         exit()
 

@@ -1,6 +1,10 @@
 import sys
 
 
+list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
+             "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
+
+
 def decryption_format(dec_text):
     dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
     result = dec_text[0].upper() + dec_text[1:]
@@ -56,7 +60,7 @@ def Cardano_grid(operation, text):
                             table_arr[i][j] = text[0]
                             text = text[1:]
                         else:
-                            table_arr[i][j] = "я"
+                            table_arr[i][j] = list_alph[(i * j) % 32]
 
                 for i in range(10):
                     for j in range(10):
@@ -94,7 +98,7 @@ def Cardano_grid(operation, text):
                                 table_arr[i][j] = text[0]
                                 text = text[1:]
                             else:
-                                table_arr[i][j] = "я"
+                                table_arr[i][j] = list_alph[(i * j) % 32]
 
                 for i in range(10):
                     for j in range(10):
@@ -103,7 +107,7 @@ def Cardano_grid(operation, text):
                                 table_arr[i][j] = text[0]
                                 text = text[1:]
                             else:
-                                table_arr[i][j] = "я"
+                                table_arr[i][j] = list_alph[(i * j) % 32]
 
                 for i in range(10):
                     for j in range(10):
@@ -112,7 +116,7 @@ def Cardano_grid(operation, text):
                                 table_arr[i][j] = text[0]
                                 text = text[1:]
                             else:
-                                table_arr[i][j] = "я"
+                                table_arr[i][j] = list_alph[(i * j) % 32]
 
                 for i in range(10):
                     for j in range(10):
@@ -121,14 +125,15 @@ def Cardano_grid(operation, text):
                                 table_arr[i][j] = text[0]
                                 text = text[1:]
                             else:
-                                table_arr[i][j] = "я"
+                                table_arr[i][j] = list_alph[(i * j) % 32]
 
                 for i in range(10):
                     for j in range(10):
                         result_text += str(table_arr[i][j])
 
             answer = decryption_format(result_text)
-            while answer[-1] in ["я", "Я"]: answer = answer[:-1]
+
+            answer = answer[:answer.rfind('.') + 1]
 
             print("Decrypted text: ", end=' ')
             for i in answer: print(i, end='')
@@ -154,7 +159,7 @@ def Cardano_grid(operation, text):
                             table_arr[i][j] = text[0]
                             text = text[1:]
                         else:
-                            table_arr[i][j] = "я"
+                            table_arr[i][j] = list_alph[(i * j * i-1) % 32]
 
             grid_st_2 = mirror_matrix_1(grid_6)
 
@@ -165,7 +170,7 @@ def Cardano_grid(operation, text):
                             table_arr[i][j] = text[0]
                             text = text[1:]
                         else:
-                            table_arr[i][j] = "я"
+                            table_arr[i][j] = list_alph[(i * j) % 32]
 
             grid_st_3 = mirror_matrix_2(grid_st_2)
 
@@ -176,7 +181,7 @@ def Cardano_grid(operation, text):
                             table_arr[i][j] = text[0]
                             text = text[1:]
                         else:
-                            table_arr[i][j] = "я"
+                            table_arr[i][j] = list_alph[(i * j * i + 4) % 32]
 
             grid_st_4 = mirror_matrix_2(grid_6)
 
@@ -187,7 +192,7 @@ def Cardano_grid(operation, text):
                             table_arr[i][j] = text[0]
                             text = text[1:]
                         else:
-                            table_arr[i][j] = "я"
+                            table_arr[i][j] = list_alph[(i * j * i * 2) % 32]
 
             for i in range(6):
                 for j in range(10):
@@ -204,7 +209,7 @@ def Cardano_grid(operation, text):
                         table_arr[i][j] = text[0]
                         text = text[1:]
                     else:
-                        table_arr[i][j] = "я"
+                        table_arr[i][j] = list_alph[(i * j * 7) % 32]
 
             for i in range(6):
                 for j in range(10):
@@ -233,10 +238,9 @@ def Cardano_grid(operation, text):
                         result_text += table_arr[i][j]
 
             answer = decryption_format(result_text)
-            while answer[-1] in ["я", "Я"]: answer = answer[:-1]
+            answer = answer[:answer.rfind('.') + 1]
 
-            print("Decrypted text: ", end=' ')
-            for i in answer: print(i, end='')
+            print("Decrypted text: ", answer, end='')
             print()
 
 

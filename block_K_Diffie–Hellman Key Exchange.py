@@ -1,4 +1,3 @@
-
 shared_n = int(input("Enter shared n:"))
 shared_a = int(input("Enter shared a:"))
 

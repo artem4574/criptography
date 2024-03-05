@@ -21,9 +21,9 @@ def digitization(open_text):
     return dig_text
 
 
-def grouper(n, iterable, fillvalue=None):
+def grouper(n, iterable, fill_value=None):
     args = [iter(iterable)] * n
-    return zip_longest(fillvalue=fillvalue, *args)
+    return zip_longest(fillvalue=fill_value, *args)
 
 
 def undigitization(d_text):
@@ -43,28 +43,28 @@ def loading_registers(key):
     reg_z_length = 23
 
     for i in range(reg_x_length):
-        register_x.insert(i, int(key[i]))
+        register_x.append(int(key[i]))
 
     p = reg_x_length
 
-    for j in range(reg_y_length):
-        register_y.insert(j, int(key[p]))
+    for _ in range(reg_y_length):
+        register_y.append(int(key[p]))
         p += 1
 
     k = reg_y_length + reg_x_length
 
-    for r in range(reg_z_length):
-        register_z.insert(r, int(key[k]))
+    for _ in range(reg_z_length):
+        register_z.append(int(key[k]))
         k += 1
 
 
-def generate_keystream(length):
+def generate_key_stream(length):
 
     x_temp = copy.deepcopy(register_x)
     y_temp = copy.deepcopy(register_y)
     z_temp = copy.deepcopy(register_z)
 
-    keystream = []
+    key_stream = []
 
     for _ in range(length):
 
@@ -82,9 +82,9 @@ def generate_keystream(length):
             new_bit = z_temp[7] ^ z_temp[20] ^ z_temp[21] ^ z_temp[22]
             z_temp = [new_bit] + z_temp[:-1]
 
-        keystream.append(x_temp[18] ^ y_temp[21] ^ z_temp[22])
+        key_stream.append(x_temp[18] ^ y_temp[21] ^ z_temp[22])
 
-    return keystream
+    return key_stream
 
 
 def decryption_format(dec_text):
@@ -101,7 +101,7 @@ def decryption_format(dec_text):
     return result
 
 
-def a5_1(operation, text):
+def A5_1(operation, text):
 
     key = str(input('Enter a 64-bit key: '))
     if len(key) != 64:
@@ -116,7 +116,7 @@ def a5_1(operation, text):
 
         binary = list(digitization(text))
 
-        keystream = generate_keystream(len(binary))
+        keystream = generate_key_stream(len(binary))
 
         for i in range(len(binary)): ciphertext += str(int(binary[i]) ^ keystream[i])
 
@@ -127,7 +127,7 @@ def a5_1(operation, text):
 
         dec_text = ""
         binary_xor = []
-        keystream = generate_keystream(len(text))
+        keystream = generate_key_stream(len(text))
 
         for i in range(len(text)):
             binary_xor.insert(i, int(text[i]))
@@ -193,7 +193,7 @@ while True:
         text = text.replace(' ', '')
 
     if select == 1:
-        a5_1(operation, text.lower())
+        A5_1(operation, text.lower())
         print()
 
 # 64-bit key: 0101001000011010110001110001100100101001000000110111111010110111

@@ -51,30 +51,30 @@ def Playfair_cipher(operation, text, answer=""):
 
     if operation == 1:  # encryption
 
-        if len(text) % 2 != 0: text += "ф"  # избыточность для нечетной длины последовательности
+        for i in range(len(text) - 1):
+            if text[i] == text[i + 1]:
+                text = text[:i + 1] + "ф" + text[i + 1:]  # избыточность для повторяющихся букв
 
-        length, i = len(text), 0
+        if len(text) % 2 != 0: text += "ф"                # избыточность для нечетной длины последовательности
+        print(text)
+        i = 0
 
-        while i < length:
+        while i < len(text):
 
             f_let = text[i]
             s_let = text[i + 1]
-
-            if f_let == s_let:
-                text = text[:i + 1] + "ф" + text[i + 1:]  # избыточность для повторяющихся букв
-                length += 1
 
             i += 2
 
             f_let_i, f_let_j = find_index(table, f_let)[0], find_index(table, f_let)[1]
             s_let_i, s_let_j = find_index(table, s_let)[0], find_index(table, s_let)[1]
 
-            if f_let_i == s_let_i:  # если в таблице в одной строке
+            if f_let_i == s_let_i:                              # если в таблице в одной строке
                 answer += table[f_let_i][(f_let_j + 1) % 6]
                 answer += table[s_let_i][(s_let_j + 1) % 6]
                 continue
 
-            if f_let_j == s_let_j:  # если в таблице в одном столбце
+            if f_let_j == s_let_j:                               # если в таблице в одном столбце
                 answer += table[(f_let_i + 1) % 5][f_let_j]
                 answer += table[(s_let_i + 1) % 5][s_let_j]
                 continue
@@ -84,9 +84,9 @@ def Playfair_cipher(operation, text, answer=""):
                 answer += table[s_let_i][f_let_j]
                 continue
 
-        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer), 5)))
+        print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer) - 1 if len(text) % 2 == 1 else len(answer), 5)))
 
-    if operation == 2:  # decryption
+    if operation == 2:                                            # decryption
 
         for i in range(0, len(text) - 1, 2):
 
@@ -96,12 +96,12 @@ def Playfair_cipher(operation, text, answer=""):
             f_let_i, f_let_j = find_index(table, f_let)[0], find_index(table, f_let)[1]
             s_let_i, s_let_j = find_index(table, s_let)[0], find_index(table, s_let)[1]
 
-            if f_let_i == s_let_i:  # если в таблице в одной строке
+            if f_let_i == s_let_i:                            # если в таблице в одной строке
                 answer += table[f_let_i][(f_let_j - 1) % 6]
                 answer += table[s_let_i][(s_let_j - 1) % 6]
                 continue
 
-            if f_let_j == s_let_j:  # если в таблице в одном столбце
+            if f_let_j == s_let_j:                            # если в таблице в одном столбце
                 answer += table[(f_let_i - 1) % 5][f_let_j]
                 answer += table[(s_let_i - 1) % 5][s_let_j]
                 continue
@@ -113,7 +113,7 @@ def Playfair_cipher(operation, text, answer=""):
 
         result = decryption_format(answer)
 
-        print("Decrypted text: ", result, end='')
+        print("Decrypted text: ", result[:-1] if result[-1] == 'ф' else result, end='')
 
 
 def matrix_cipher(operation, text, answer=""):
@@ -126,7 +126,7 @@ def matrix_cipher(operation, text, answer=""):
         row = input().split()
         for cols in range(3): key_matrix[rows, cols] = int(row[cols])
 
-    if np.linalg.det(key_matrix) != 0:
+    if np.linalg.det(key_matrix) not in [0, 6.66133814775094e-16]:
 
         if operation == 1:
 

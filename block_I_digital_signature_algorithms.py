@@ -2,7 +2,7 @@ from typing import List
 import sys
 
 
-def hash(text, p):
+def hash_quad(text, p):
     alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
     tec_h = 0
     for i in range(len(text)):
@@ -34,6 +34,7 @@ def comparisons(a, b, m):
     divider, divisible = m, a
     rem = divider % divisible
     n, arr_q, arr_rem = 0, [], []
+
     while rem != 0:
         integer = divider // divisible
         rem = divider % divisible
@@ -41,9 +42,11 @@ def comparisons(a, b, m):
         arr_q.append(integer)
         divider, divisible = divisible, rem
         n += 1
+
     if a % arr_rem[-2] != 0 or b % arr_rem[-2] != 0 or m % arr_rem[-2] != 0:
         print("Comparison have no solutions")
         return 0
+
     else:
         a /= arr_rem[-2]
         b /= arr_rem[-2]
@@ -52,6 +55,7 @@ def comparisons(a, b, m):
         p = [1, arr_q[0]]
         for i in range(2, n+1):
             p.append(arr_q[i-1]*p[i-1]+p[i-2])
+
         return int(((-1)**(n-1) * p[-2] * b) % m)
 
 
@@ -67,14 +71,14 @@ def RSA(operation, text):
 
     if operation == 1:
 
-        s = (hash(text, n) ** d) % n
+        s = (hash_quad(text, n) ** d) % n
         print("Signature: ", s)
 
     if operation == 2:
 
         s = int(input(" - Enter S: "))
 
-        if hash(text, n) == (s ** e) % n:
+        if hash_quad(text, n) == (s ** e) % n:
             print("The signature is approved!")
         else:
             print("Error in signature calculating")
@@ -87,7 +91,7 @@ def ElGamal(operation, text):
     x = int(input(f' - Enter X{"<" + str(p - 1) if operation == 1 else ""}: '))
     k = int(input(" - Enter K: "))  # k generation
 
-    m = hash(text, p-1)
+    m = hash_quad(text, p-1)
     y = (g ** x) % p
 
     if operation == 1:

@@ -22,16 +22,82 @@ def euclid(a: int, b: int):
 
 def eq(a: int, b: int, m: int) -> int:
     q: List[int] = euclid(a, m)
-    if m < a: q.insert(0, 0)
+
+    if m < a:
+        q.insert(0, 0)
     p: List = [1, q[0]]
-    for i in range(1, len(q)): p.append(p[i] * q[i] + p[i-1])
-    return ((-1)**(len(q) - 1) * p[-2] * b) % m
+
+    for i in range(1, len(q)):
+        p.append(p[i] * q[i] + p[i-1])
+
+    return ((-1) ** (len(q) - 1) * p[-2] * b) % m
+
+
+def euler_func(num):
+    amount = 0
+    for k in range(1, num + 1):
+        if gcd(num, k) == 1:
+            amount += 1
+    return amount
+
+
+def composition(point, k, a, p):
+
+    ans_point = point
+    delta = (((3 * point[0] ** 2 + a) % p) / ((2 * point[1]) % p)) % p
+
+    if delta % 1 != 0:
+        delta = ((3 * (ans_point[0]**2) + a) % p) * ((((2 * ans_point[1]) % p) ** (euler_func(p)-1)) % p) % p
+
+    x = (delta ** 2 - 2 * ans_point[0]) % p
+    y = (delta * (ans_point[0] - x) - ans_point[1]) % p
+    ans_point = [int(x), int(y)]
+
+    if k > 2:
+        x_q = int(point[0])
+        y_q = int(point[1])
+        for i in range(k-2):
+            if ans_point == "O":
+                ans_point = point
+                continue
+            x_p = int(ans_point[0])
+            y_p = int(ans_point[1])
+            if point == ans_point:
+                try:
+                    delta = (3 * (x_p**2) + a) % p / (2 * y_p) % p
+                    if delta % 1 != 0:
+                        delta = ((3 * (x_p**2) + a) % p) * ((((2 * y_p) % p) ** (euler_func(p)-1)) % p) % p
+                except ZeroDivisionError:
+                    ans_point = "O"
+                    continue
+            else:
+                if y_p == -y_q or -y_p == y_q:
+                    ans_point = "O"
+                    continue
+                else:
+                    try:
+                        delta = (((y_q - y_p) % p)/((x_q - x_p) % p)) % p
+                        if delta % 1 != 0:
+                            delta = (((y_q - y_p) % p) * (((x_q - x_p) % p) ** (euler_func(p) - 1)) % p)
+                    except ZeroDivisionError:
+                        ans_point = "O"
+                        continue
+
+            x_r = (delta ** 2 - x_p - x_q) % p
+            y_r = (((delta * (x_p - x_r)) % p) - y_p) % p
+            ans_point = [int(x_r), int(y_r)]
+
+    if type(ans_point) is list:
+        return [ans_point[0], ans_point[1]]
+    else:
+        return False
 
 
 def comparisons(a, b, m):
     divider, divisible = m, a
     rem = divider % divisible
     n, arr_q, arr_rem = 0, [], []
+
     while rem != 0:
         integer = divider // divisible
         rem = divider % divisible
@@ -39,10 +105,12 @@ def comparisons(a, b, m):
         arr_q.append(integer)
         divider, divisible = divisible, rem
         n += 1
+
     if a % arr_rem[-2] != 0 or b % arr_rem[-2] != 0 or m % arr_rem[-2] != 0:
         print("Comparison have no solutions")
         return 0
     else:
+
         a /= arr_rem[-2]
         b /= arr_rem[-2]
         m /= arr_rem[-2]
@@ -50,7 +118,8 @@ def comparisons(a, b, m):
         p = [1, arr_q[0]]
         for i in range(2, n+1):
             p.append(arr_q[i-1]*p[i-1]+p[i-2])
-        return int(((-1)**(n-1) * p[-2] * b) % m)
+
+        return int(((-1) ** (n-1) * p[-2] * b) % m)
 
 
 def digitization(open_text):
@@ -60,9 +129,11 @@ def digitization(open_text):
 
 
 def decryption_format(dec_text):
+
     dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
     result = dec_text[0].upper() + dec_text[1:]
     result_list = list(result)
+
     for i in range(len(result_list) - 3):
         if result_list[i] == ".":
             result_list[i + 2] = result_list[i + 2].upper()
@@ -156,66 +227,6 @@ def RSA(operation, text):
         answer = decryption_format(result_text)
         print("Decrypted text: ", end=' ')
         for i in answer: print(i, end='')
-
-
-def euler_func(num):
-    amount = 0
-    for k in range(1, num + 1):
-        if gcd(num, k) == 1:
-            amount += 1
-    return amount
-
-
-def composition(point, k, a, p):
-
-    ans_point = point
-    delta = (((3 * point[0] ** 2 + a) % p) / ((2 * point[1]) % p)) % p
-
-    if delta % 1 != 0:
-        delta = ((3 * (ans_point[0]**2) + a) % p) * ((((2 * ans_point[1]) % p) ** (euler_func(p)-1)) % p) % p
-
-    x = (delta ** 2 - 2 * ans_point[0]) % p
-    y = (delta * (ans_point[0] - x) - ans_point[1]) % p
-    ans_point = [int(x), int(y)]
-
-    if k > 2:
-        x_q = int(point[0])
-        y_q = int(point[1])
-        for i in range(k-2):
-            if ans_point == "O":
-                ans_point = point
-                continue
-            x_p = int(ans_point[0])
-            y_p = int(ans_point[1])
-            if point == ans_point:
-                try:
-                    delta = (3 * (x_p**2) + a) % p / (2 * y_p) % p
-                    if delta % 1 != 0:
-                        delta = ((3 * (x_p**2) + a) % p) * ((((2 * y_p) % p) ** (euler_func(p)-1)) % p) % p
-                except ZeroDivisionError:
-                    ans_point = "O"
-                    continue
-            else:
-                if y_p == -y_q or -y_p == y_q:
-                    ans_point = "O"
-                    continue
-                else:
-                    try:
-                        delta = (((y_q - y_p) % p)/((x_q - x_p) % p)) % p
-                        if delta % 1 != 0:
-                            delta = (((y_q - y_p) % p) * (((x_q - x_p) % p) ** (euler_func(p) - 1)) % p)
-                    except ZeroDivisionError:
-                        ans_point = "O"
-                        continue
-
-            x_r = (delta ** 2 - x_p - x_q) % p
-            y_r = (((delta * (x_p - x_r)) % p) - y_p) % p
-            ans_point = [int(x_r), int(y_r)]
-
-    if type(ans_point) is list:
-        return [ans_point[0], ans_point[1]]
-    else:
-        return False
 
 
 def ECC(operation, text):
