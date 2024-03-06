@@ -1,5 +1,7 @@
 from typing import List
 import sys
+import sympy
+from math import gcd
 
 
 def hash_quad(text, p):
@@ -28,6 +30,15 @@ def eq(a: int, b: int, m: int) -> int:
     p: List = [1, q[0]]
     for i in range(1, len(q)): p.append(p[i] * q[i] + p[i-1])
     return ((-1)**(len(q) - 1) * p[-2] * b) % m
+
+
+def is_prime(n):
+    if n % 2 == 0:
+        return n == 2
+    d = 3
+    while d ** 2 <= n and n % d != 0:
+        d += 2
+    return d ** 2 > n
 
 
 def comparisons(a, b, m):
@@ -61,15 +72,25 @@ def comparisons(a, b, m):
 
 def RSA(operation, text):
 
-    p = int(input(" - Enter P(prime): "))
-    q = int(input(" - Enter Q(another prime): "))
-    n = p * q
-    phi = (p - 1) * (q - 1)
-    e = int(input(f" - Enter 1 < E < {phi}: "))
-    # проверка на взаимную простоту
-    d = eq(e, 1, phi)
-
     if operation == 1:
+
+        p = int(input(" - Enter P(prime): "))
+        q = int(input(" - Enter Q(another prime): "))
+        if not is_prime(p) or not is_prime(q):
+            print("P and Q should be prime!")
+            exit()
+        n = p * q
+        if len(text) >= n:
+            print("N < length of text!")
+            exit()
+        phi = (p - 1) * (q - 1)
+
+        # e = int(input(f" - Enter 1 < E < {phi}: "))
+        e = 2
+        while gcd(e, phi) != 1 or e > phi:
+            e: int = sympy.randprime(3, phi)
+
+        d = eq(e, 1, phi)
 
         s = (hash_quad(text, n) ** d) % n
         print("Signature: ", s)
@@ -77,6 +98,8 @@ def RSA(operation, text):
     if operation == 2:
 
         s = int(input(" - Enter S: "))
+        n = int(input(" - Enter N: "))
+        e = int(input(" - Enter E: "))
 
         if hash_quad(text, n) == (s ** e) % n:
             print("The signature is approved!")
@@ -87,23 +110,37 @@ def RSA(operation, text):
 def ElGamal(operation, text):
 
     p = int(input(" - Enter P(prime): "))
+    if not is_prime(p):
+        print("P should be prime!")
+        exit()
     g = int(input(f' - Enter G{"<" + str(p) if operation == 1 else ""}: '))
+    if g > p:
+        print("P > G!")
+        exit()
     x = int(input(f' - Enter X{"<" + str(p - 1) if operation == 1 else ""}: '))
-    k = int(input(" - Enter K: "))  # k generation
+    if x > p-1:
+        print("X > P-1")
+        exit()
+
+    k = 2
+    while gcd(k, p - 1) != 1 or k >= p - 1:
+        k: int = sympy.randprime(3, p - 2)
 
     m = hash_quad(text, p-1)
-    y = (g ** x) % p
 
     if operation == 1:
 
         a = (g ** k) % p
         b = comparisons(k, m - x * a, p-1)
+        y = (g ** x) % p
 
+        print("Y =", y)
         print("Signature: (", a, ", ", b, ")", sep='')
 
     if operation == 2:
 
         s = list(map(int, input(" - Enter signature: ").split()))
+        y = int(" - Enter Y: ")
 
         if ((y ** s[0]) * (s[0] ** s[1])) % p == (g ** m) % p:
             print("The signature is approved!")
