@@ -18,7 +18,7 @@ def euler_func(num):
             amount += 1
     return amount
 
-'''
+
 a = 1
 b = 3
 p = 41
@@ -145,7 +145,7 @@ def composition(point, k, a, p):
 
 # print(composition([6, 5], 5, 1, 11))
 
-'''
+
 for i in range(2, 6):
     composition([3, 3], i, 1, 11)
 '''
