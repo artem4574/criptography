@@ -1,3 +1,4 @@
+import random
 import sys
 from math import gcd
 
@@ -16,6 +17,15 @@ def euler_func(num):
         if gcd(num, k) == 1:
             amount += 1
     return amount
+
+
+def is_prime(n):
+    if n % 2 == 0:
+        return n == 2
+    d = 3
+    while d ** 2 <= n and n % d != 0:
+        d += 2
+    return d ** 2 > n
 
 
 def composition(point, k, a, p):
@@ -102,24 +112,41 @@ def point_addition(point_1: list, point_2: list, a, p):
 def GOSTR_34_10_94(operation, text):
 
     p = int(input(" - Enter P(prime): "))
-    q = int(input(f" - Enter Q(simple multiplier of {p-1}): "))
+    if not is_prime(p):
+        print("P should be prime!")
+        exit()
+    q = int(input(f" - Enter Q(prime multiplier of {p-1}): "))
+    if not is_prime(q) or (p - 1) % q != 0:
+        print(f"Q should be prime multiplier of {p-1}!")
+        exit()
     a = int(input(f" - Enter A(1 < A < {p - 1}, a ^ q mod p = 1): "))
-    x = int(input(f" - Enter X( < {q}): "))
+    if a >= p-1 or a**q % p != 1:
+        print(f"a should be < {p-1} and a ^ q mod p = 1")
+        exit()
 
-    y = (a ** x) % p
     m = hash_quad(text, q) if hash_quad(text, q) != 0 else 1
 
     if operation == 1:
         r, s = 0, 0
+
+        x = int(input(f" - Enter X( < {q}): "))
+        if x >= q:
+            print(f"X >= Q")
+            exit()
+
+        y = (a ** x) % p
+
         while r <= 0:
-            k = int(input(f" - Enter K( < {q}): "))
+            k: int = random.randint(1, q - 1)
             r = ((a ** k) % p) % q
             s = (x * r + k * hash_quad(text, q)) % q
+        print("Y =", y)
         print("Signature: ", r % (2 ** 256), s % (2 ** 256))
 
     if operation == 2:
 
         s = list(map(int, input(" - Enter signature: ").split()))
+        y = int(input(" - Enter Y: "))
 
         v = m ** (q - 2) % q
         z_1 = (s[1] * v) % q
@@ -136,24 +163,40 @@ def GOSTR_34_10_2012(operation, text):
 
     a = int(input(" - Enter a: "))
     p_m = int(input(" - Enter p: "))
-    x_a = int(input(f' - Enter Xa: '))
-    q = int(input(f' - Enter q: '))
+    if not is_prime(p_m):
+        print("P should be prime!")
+        exit()
     g = list(map(int, input(" - Enter G: ").split()))
 
+    q = 1
+    while composition(g, q, a, p_m):
+        q += 1
+    # q = int(input(" - Enter q: "))
     m = hash_quad(text, p_m)
-    y_a = composition([g[0], g[1]], x_a, a, p_m)
 
     if operation == 1:
+
         r, s = 0, 0
+
+        x_a: int = random.randint(1, q - 1)
+        # x_a = int(input(" - Enter x_a: "))
+        y_a = composition([g[0], g[1]], x_a, a, p_m)
+
         while r <= 0 and s <= 0:
-            k = int(input(f' - Enter K: '))
+            k: int = random.randint(1, q - 1)
+            # k = int(input(" - Enter k: "))
             p = composition([g[0], g[1]], k, a, p_m)
             r = p[0] % q
             s = ((k * m) + (r * x_a)) % q
+
         print("Signature: ", r, s)
+        print("Y:", y_a)
 
     if operation == 2:
+
         s = list(map(int, input(" - Enter signature: ").split()))
+        y_a = list(map(int, input(" - Enter Y: ").split()))
+
         if s[0] > 0 and s[1] < q:
             u_1 = s[1] * (m ** (q - 2))
             u_2 = -s[0] * (m ** (q - 2))
@@ -220,3 +263,4 @@ while True:
     if select == 2:
         GOSTR_34_10_2012(operation, text.lower())
         print()
+
