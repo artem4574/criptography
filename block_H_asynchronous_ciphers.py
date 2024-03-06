@@ -3,7 +3,7 @@ import sympy
 import sys
 from typing import List
 from math import gcd
-
+import time
 
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
 
@@ -18,6 +18,15 @@ def euclid(a: int, b: int):
             res.append(b//a)
             b %= a
     return res
+
+
+def is_prime(n):
+    if n % 2 == 0:
+        return n == 2
+    d = 3
+    while d ** 2 <= n and n % d != 0:
+        d += 2
+    return d ** 2 > n
 
 
 def eq(a: int, b: int, m: int) -> int:
@@ -41,6 +50,13 @@ def euler_func(num):
     return amount
 
 
+def El_Gamal_key_generate(phi) -> int:
+    key = 0
+    while gcd(key, phi) != 1:
+        key: int = sympy.randprime(3, phi)
+    return key
+        
+        
 def composition(point, k, a, p):
 
     ans_point = point
@@ -146,40 +162,52 @@ def decryption_format(dec_text):
 
 def ElGamal(operation, text):
 
-    p = int(input(f'Enter p(prime{", > " + str(len(text)) if operation == 1 else ""}): '))
+    p = int(input(f'Enter p(prime{", > " + str(32) if operation == 1 else ""}): '))
+    if not is_prime(p) or p < 32:
+        print("P should be prime and > 32!")
+        exit()
     g = int(input(f'Enter 0 < g < {p}: '))
     x = int(input(f'Enter 0 < x < {p}: '))
+    if p < x or p < g or x < 1 or g < 1:
+        print("1 < x < p and 1 < g < p!")
+        exit()
 
     phi: int = p-1
 
     if operation == 1:
 
         m_i = digitization(text)
-
-        '''k1: int = sympy.randprime(3, phi)
-        k2: int = sympy.randprime(3, k1)
-        k3: int = sympy.randprime(k1, phi)'''
-        k1, k2, k3 = 3, 7, 13
+        
         y = (g ** x) % p
         result_text = []
-        choose_ai = 0
+
+########################_TEST_MODE_########################
+        '''choose_key, k1, k2, k3 = 0, 3, 7, 13
+        
         for i in range(len(m_i)):
 
-            # choose_ai = random.randint(1, 3)
-            choose_ai += 1
-            if choose_ai % 3 == 1:
+            choose_key += 1
+            if choose_key % 3 == 1:
                 a, b = (g ** k1) % p, ((y ** k1) * m_i[i]) % p
                 result_text.extend([a, b])
 
-            if choose_ai % 3 == 2:
+            if choose_key % 3 == 2:
                 a, b = (g ** k2) % p, ((y ** k2) * m_i[i]) % p
                 result_text.extend([a, b])
 
-            if choose_ai % 3 == 0:
+            if choose_key % 3 == 0:
                 a, b = (g ** k3) % p, ((y ** k3) * m_i[i]) % p
-                result_text.extend([a, b])
+                result_text.extend([a, b])'''
 
-        print("Encrypted text: ", end='')
+##########################################################
+
+        for i in range(len(m_i)):
+
+            key = El_Gamal_key_generate(phi)
+            a, b = (g ** key) % p, ((y ** key) * m_i[i]) % p
+            result_text.extend([a, b])
+
+        print("Y =", y, "Encrypted text: ", end='')
         for i in result_text: print(i, "", end="")
 
     if operation == 2:
@@ -196,33 +224,48 @@ def ElGamal(operation, text):
 
         print("Decrypted text: ", end=' ')
         for i in answer: print(i, end='')
+        print()
 
 
 def RSA(operation, text):
 
-    p = int(input(" - Enter P(prime): "))
-    q = int(input(" - Enter Q(another prime): "))
-    n = p * q
-    phi = (p-1) * (q-1)
-    e = int(input(f" - Enter 1 < E < {phi}: "))
-    d = eq(e, 1, phi)
-
     if operation == 1:
+
+        p = int(input(" - Enter P(prime): "))
+        q = int(input(" - Enter Q(another prime): "))
+        if not is_prime(p) or not is_prime(q):
+            print("P and Q should be prime!")
+            exit()
+        n = p * q
+        if n < 32:
+            print("P * Q < 32!")
+            exit()
+        phi = (p - 1) * (q - 1)
+        e = int(input(f" - Enter 1 < E < {phi}: ")) if len(text) < 1000 else phi
+
+        while gcd(e, phi) != 1 or e > phi:
+            e: int = sympy.randprime(3, phi)
 
         digit_text = digitization(text)
         ciphertext = []
 
-        for i in range(len(digit_text)): ciphertext.append((digit_text[i] ** e) % n)
-
+        for i in range(len(digit_text)):
+            ciphertext.append((digit_text[i] ** e) % n)
+        print("N = ", n, ", E = ", e, sep='')
         print("Encrypted text: ", end='')
         for i in ciphertext: print(i, "", end='')
+        print()
 
     if operation == 2:
-
+        n = int(input(" - Enter N: "))
+        phi = euler_func(n)
+        e = int(input(" - Enter E: "))
+        d = eq(e, 1, phi)
         text: List[int] = text.split()
         result_text = ""
 
-        for i in text: result_text += alphabet[((int(i) ** d) % n) - 1]
+        for i in text:
+            result_text += alphabet[((int(i) ** d) % n) - 1]
 
         answer = decryption_format(result_text)
         print("Decrypted text: ", end=' ')
@@ -231,33 +274,73 @@ def RSA(operation, text):
 
 def ECC(operation, text):
 
-    '''
+    """
     a = int(input(" - Enter a: "))
+    b = int(input(" - Enter b: "))
     p_m = int(input(" - Enter p: "))
     c_b = int(input(" - Enter Cb: "))
-    '''
 
-    a, p_m, g, c_b, k, = 1, 11, [6, 5], 5, 4
+    q_m = 1
+    while composition(g, q_m, a, p_m):
+        q_m += 1
+    """
+
+    a, b, p_m, g, c_b, q_m = 1, 3, 41, [3, 22], 4, 39
 
     if operation == 1:
-        '''
-        g = list(map(int, input(" - Enter G: ").split()))
-        k = int(input(" - Enter k: "))
-        '''
 
+        ciphertext = []
+        digit_text = digitization(text)
+
+        for i in range(len(digit_text)):
+
+            k = random.randint(1, q_m - 1)
+            d_b = composition(g, c_b, a, p_m)
+            r = composition(g, k, a, p_m)
+            p = composition(d_b, k, a, p_m)
+
+            ciphertext.extend([r[0], r[1], (digit_text[i] * p[0]) % p_m])
+
+        print("Encrypted text: ", end='')
+        for i in ciphertext: print(i, "", end='')
+
+########################_TEST_MODE_########################
+        """
+        k = 5
+        g = list(map(int, input(" - Enter G: ").split()))
         d_b = composition(g, c_b, a, p_m)
         r = composition(g, k, a, p_m)
         p = composition(d_b, k, a, p_m)
-
         print("Encrypted text: ", "(", r[0], ", ", r[1], ") ", ((int(text) * p[0]) % p_m), sep='', end='')
+        """
+###########################################################
 
     if operation == 2:
 
+        text_list: List[int] = text.split()
+        point_list = [int(i) for i in text_list]
+        dec_text = ""
+
+        for i in range(0, len(point_list) - 2, 3):
+
+            r = [point_list[i], point_list[i+1]]
+            q = composition(r, c_b, a, p_m)
+            x = q[0] ** (p_m - 2)
+
+            dec_text += alphabet[((point_list[i+2] * x) % p_m) - 1]
+
+        answer = decryption_format(dec_text)
+        print("Decrypted text: ", end=' ')
+        for i in answer: print(i, end='')
+
+########################_TEST_MODE_########################
+        """
         r = list(map(int, input(" - Enter R: ").split()))
         q = composition(r, c_b, a, p_m)
         x = q[0] ** (p_m - 2)
-
         print("Decrypted text: ", ((int(text) * x) % p_m))
+        """
+###########################################################
 
 
 while True:
@@ -318,5 +401,5 @@ while True:
         print()
 
     if select == 3:
-        ECC(operation, text)
+        ECC(operation, text.lower())
         print()
