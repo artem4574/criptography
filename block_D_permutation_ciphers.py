@@ -1,5 +1,5 @@
 import sys
-
+import math
 
 list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
              "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
@@ -247,11 +247,12 @@ def Cardano_grid(operation, text):
 def vertical_permutation(operation, text):
 
     key = input("Enter key: ")
-    result_text = ""
 
     if len(key) > len(text):
         print("Wrong key")
         exit()
+
+    result_text = ""
 
     letter_order = {chr(i): i - ord('а') + 1 for i in range(ord('а'), ord('я') + 1)}
 
@@ -266,41 +267,47 @@ def vertical_permutation(operation, text):
                 key_list[i] += 1
 
     cols = len(key_list)
-    if len(text) % cols == 0: rows = (len(text) // cols)
-    else: rows = (len(text) // cols) + 1
+    if len(text) % cols == 0:
+        rows = (len(text) // cols)
+    else:
+        rows = (len(text) // cols) + 1
 
-    table = [[0] * cols for _ in range(rows)]
+    table_arr = [[0] * cols for _ in range(rows)]
+
+    k = 0
+    for i in range(rows):
+        for j in range(cols):
+            if k < len(text):
+                table_arr[i][j] = str(text[k])
+                k += 1
+            else:
+                table_arr[i][j] = ""
 
     if operation == 1:
 
-        for i in range(rows):
-            for j in range(cols):
-                if len(text) != 0:
-                    table[i][j] = text[0]
-                    text = text[1:]
-                else:
-                    table[i][j] = "я"
-
-        for j in range(cols):
-            for i in range(rows):
-                result_text += table[i][key_list[j]]
+        for i in range(cols):
+            for j in range(rows):
+                result_text += table_arr[j][key_list.index(i)]
 
         print("Encrypted text: ", ' '.join(result_text[i: i + 5] for i in range(0, len(result_text), 5)))
         print()
 
     if operation == 2:
 
-        for j in range(cols):
-            for i in range(rows):
-                table[i][j] = text[0]
-                text = text[1:]
+        k = 0
+        for i in range(cols):
+            index = key_list.index(i)
+            for j in range(rows):
+                if table_arr[j][index] != "":
+                    table_arr[j][index] = ""
+                    table_arr[j][index] += text[k]
+                    k += 1
 
         for i in range(rows):
             for j in range(cols):
-                result_text += table[i][key_list.index(j)]
+                result_text += table_arr[i][j]
 
         answer = decryption_format(result_text)
-        while answer[-1] in ["я", "Я"]: answer = answer[:-1]
 
         print("Decrypted text: ", end=' ')
         for i in answer: print(i, end='')
