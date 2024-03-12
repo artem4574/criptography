@@ -15,12 +15,11 @@ def digitization(open_text):
     return dig_text
 
 
-def grouper(n, iterable, fill_value=None):
-    args = [iter(iterable)] * n
-    return zip_longest(fillvalue=fill_value, *args)
-
-
 def undigitization(d_text):
+    def grouper(n, iterable, fill_value=None):
+        args = [iter(iterable)] * n
+        return zip_longest(fillvalue=fill_value, *args)
+
     d_text = ' '.join(''.join(g) for g in grouper(5, d_text, ''))
     d_array = d_text.split()
     open_text = ""
@@ -155,13 +154,10 @@ def A5_1(operation, text):
 
         while len(text) > 0:
 
-            binary_xor = []
-
             keystream = generate_gamma(key, num)
 
             for i in range(114 if len(text) > 114 else len(text)):
-                binary_xor.insert(i, int(text[i]))
-                dec_text += str(binary_xor[i] ^ keystream[i])
+                dec_text += str(int(text[i]) ^ keystream[i])
 
             text = text[114:]
 

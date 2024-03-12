@@ -91,17 +91,19 @@ def RSA(operation, text):
             e: int = sympy.randprime(3, phi)
 
         d = eq(e, 1, phi)
-
-        s = (hash_quad(text, n) ** d) % n
-        print("Signature: ", s)
+        h = hash_quad(text, n)
+        # h = 5
+        s = (h ** d) % n
+        print(f"Signature: {s}, E = {e}, N = {n}")
 
     if operation == 2:
 
         s = int(input(" - Enter S: "))
         n = int(input(" - Enter N: "))
         e = int(input(" - Enter E: "))
-
-        if hash_quad(text, n) == (s ** e) % n:
+        h = hash_quad(text, n)
+        # h = 5
+        if h == (s ** e) % n:
             print("The signature is approved!")
         else:
             print("Error in signature calculating")
@@ -110,12 +112,12 @@ def RSA(operation, text):
 def ElGamal(operation, text):
 
     p = int(input(" - Enter P(prime): "))
-    if not is_prime(p):
-        print("P should be prime!")
+    if not is_prime(p) or type(p) != int:
+        print("P should be prime integer!")
         exit()
     g = int(input(f' - Enter G{"<" + str(p) if operation == 1 else ""}: '))
-    if g > p:
-        print("P > G!")
+    if g > p or type(g) != int:
+        print("P > G, G should be integer!")
         exit()
     x = int(input(f' - Enter X{"<" + str(p - 1) if operation == 1 else ""}: '))
     if x > p-1:
@@ -127,7 +129,7 @@ def ElGamal(operation, text):
         k: int = sympy.randprime(3, p - 2)
 
     m = hash_quad(text, p-1)
-
+    #m = 5
     if operation == 1:
 
         a = (g ** k) % p
@@ -140,7 +142,7 @@ def ElGamal(operation, text):
     if operation == 2:
 
         s = list(map(int, input(" - Enter signature: ").split()))
-        y = int(" - Enter Y: ")
+        y = int(input(" - Enter Y: "))
 
         if ((y ** s[0]) * (s[0] ** s[1])) % p == (g ** m) % p:
             print("The signature is approved!")

@@ -371,5 +371,3 @@ while True:
     if select == 2:
         vertical_permutation(operation, text.lower())
         print()
-
-

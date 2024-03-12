@@ -75,4 +75,4 @@ def hash(text, p):
     for i in range(len(text)):
         tec_h = ((tec_h + alphabet.index(text[i]) + 1) ** 2) % p
     return tec_h
-#print(hash('одиндуракможетбольшеспрашиватьзптчемдесятьумныхответяттчк',11))
+print(hash('одиндуракможетбольшеспрашиватьзптчемдесятьумныхответяттчк',11))

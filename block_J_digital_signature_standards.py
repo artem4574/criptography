@@ -29,12 +29,11 @@ def is_prime(n):
 
 
 def composition(point, k, a, p):
-
     ans_point = point
     delta = (((3 * point[0] ** 2 + a) % p) / ((2 * point[1]) % p)) % p
 
     if delta % 1 != 0:
-        delta = ((3 * (ans_point[0]**2) + a) % p) * ((((2 * ans_point[1]) % p) ** (euler_func(p)-1)) % p) % p
+        delta = ((3 * (ans_point[0] ** 2) + a) % p) * ((((2 * ans_point[1]) % p) ** (euler_func(p) - 1)) % p) % p
 
     x = (delta ** 2 - 2 * ans_point[0]) % p
     y = (delta * (ans_point[0] - x) - ans_point[1]) % p
@@ -51,9 +50,9 @@ def composition(point, k, a, p):
             y_p = int(ans_point[1])
             if point == ans_point:
                 try:
-                    delta = (3 * (x_p**2) + a) % p / (2 * y_p) % p
+                    delta = (3 * (x_p ** 2) + a) % p / (2 * y_p) % p
                     if delta % 1 != 0:
-                        delta = ((3 * (x_p**2) + a) % p) * ((((2 * y_p) % p) ** (euler_func(p)-1)) % p) % p
+                        delta = ((3 * (x_p ** 2) + a) % p) * ((((2 * y_p) % p) ** (euler_func(p) - 1)) % p) % p
                 except ZeroDivisionError:
                     ans_point = "O"
                     continue
@@ -63,7 +62,7 @@ def composition(point, k, a, p):
                     continue
                 else:
                     try:
-                        delta = (((y_q - y_p) % p)/((x_q - x_p) % p)) % p
+                        delta = (((y_q - y_p) % p) / ((x_q - x_p) % p)) % p
                         if delta % 1 != 0:
                             delta = (((y_q - y_p) % p) * (((x_q - x_p) % p) ** (euler_func(p) - 1)) % p)
                     except ZeroDivisionError:
@@ -81,7 +80,6 @@ def composition(point, k, a, p):
 
 
 def point_addition(point_1: list, point_2: list, a, p):
-
     x_q, y_q = int(point_1[0]), int(point_1[1])
     x_p, y_p = int(point_2[0]), int(point_2[1])
 
@@ -110,22 +108,21 @@ def point_addition(point_1: list, point_2: list, a, p):
 
 
 def GOSTR_34_10_94(operation, text):
-
     p = int(input(" - Enter P(prime): "))
     if not is_prime(p):
         print("P should be prime!")
         exit()
-    q = int(input(f" - Enter Q(prime multiplier of {p-1}): "))
+    q = int(input(f" - Enter Q(prime multiplier of {p - 1}): "))
     if not is_prime(q) or (p - 1) % q != 0:
-        print(f"Q should be prime multiplier of {p-1}!")
+        print(f"Q should be prime multiplier of {p - 1}!")
         exit()
     a = int(input(f" - Enter A(1 < A < {p - 1}, a ^ q mod p = 1): "))
-    if a >= p-1 or a**q % p != 1:
-        print(f"a should be < {p-1} and a ^ q mod p = 1")
+    if a <= 1 or a >= p - 1 or a ** q % p != 1:
+        print(f"a should be > 1 and < {p - 1} and a ^ q mod p = 1")
         exit()
 
     m = hash_quad(text, q) if hash_quad(text, q) != 0 else 1
-
+    #m = 5
     if operation == 1:
         r, s = 0, 0
 
@@ -138,8 +135,9 @@ def GOSTR_34_10_94(operation, text):
 
         while r <= 0:
             k: int = random.randint(1, q - 1)
+            #k = 4
             r = ((a ** k) % p) % q
-            s = (x * r + k * hash_quad(text, q)) % q
+            s = (x * r + k * m) % q
         print("Y =", y)
         print("Signature: ", r % (2 ** 256), s % (2 ** 256))
 
@@ -160,7 +158,6 @@ def GOSTR_34_10_94(operation, text):
 
 
 def GOSTR_34_10_2012(operation, text):
-
     a = int(input(" - Enter a: "))
     p_m = int(input(" - Enter p: "))
     if not is_prime(p_m):
@@ -171,20 +168,20 @@ def GOSTR_34_10_2012(operation, text):
     q = 1
     while composition(g, q, a, p_m):
         q += 1
-    # q = int(input(" - Enter q: "))
+    #q = int(input(" - Enter q: "))
     m = hash_quad(text, p_m)
-
+    #m = 1
     if operation == 1:
 
         r, s = 0, 0
 
         x_a: int = random.randint(1, q - 1)
-        # x_a = int(input(" - Enter x_a: "))
+        #x_a = int(input(" - Enter x_a: "))
         y_a = composition([g[0], g[1]], x_a, a, p_m)
 
         while r <= 0 and s <= 0:
             k: int = random.randint(1, q - 1)
-            # k = int(input(" - Enter k: "))
+            #k = int(input(" - Enter k: "))
             p = composition([g[0], g[1]], k, a, p_m)
             r = p[0] % q
             s = ((k * m) + (r * x_a)) % q
@@ -198,9 +195,10 @@ def GOSTR_34_10_2012(operation, text):
         y_a = list(map(int, input(" - Enter Y: ").split()))
 
         if s[0] > 0 and s[1] < q:
-            u_1 = s[1] * (m ** (q - 2))
-            u_2 = -s[0] * (m ** (q - 2))
+            u_1 = s[1] * (m ** (euler_func(q) - 1)) % q
+            u_2 = -s[0] * (m ** (euler_func(q) - 1)) % q
             p = point_addition(composition(g, u_1, a, p_m), composition(y_a, u_2, a, p_m), a, p_m)
+
             if p and p[0] % q == s[0]:
                 print("The signature is approved!")
             else:
@@ -263,4 +261,3 @@ while True:
     if select == 2:
         GOSTR_34_10_2012(operation, text.lower())
         print()
-

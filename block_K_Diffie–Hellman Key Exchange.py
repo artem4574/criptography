@@ -25,6 +25,8 @@ if Y_a == 1 or Y_b == 1:
     print("Open key = 1!")
     exit()
 
+k_a = (Y_b ** secret_1) % shared_n
+k_b = (Y_a**secret_2) % shared_n
 print(" \nPrivately Calculated Shared Secret:")
-print("  Ka: ", (Y_b ** secret_1) % shared_n)
-print("  Kb: ", (Y_a**secret_2) % shared_n)
+print("  Ka: ", k_a)
+print("  Kb: ", k_b)

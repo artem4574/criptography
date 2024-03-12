@@ -3,7 +3,6 @@ import sympy
 import sys
 from typing import List
 from math import gcd
-import time
 
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
 
@@ -167,8 +166,9 @@ def ElGamal(operation, text):
         print("P should be prime and > 32!")
         exit()
     g = int(input(f'Enter 0 < g < {p}: '))
-    x = int(input(f'Enter 0 < x < {p}: '))
-    if p < x or p < g or x < 1 or g < 1:
+    # x = int(input(f'Enter 0 < x < {p}: '))
+    x = random.randint(2, p-1)
+    if p <= x or p <= g or x <= 1 or g <= 1:
         print("1 < x < p and 1 < g < p!")
         exit()
 
@@ -207,10 +207,12 @@ def ElGamal(operation, text):
             a, b = (g ** key) % p, ((y ** key) * m_i[i]) % p
             result_text.extend([a, b])
 
-        print("Y =", y, "Encrypted text: ", end='')
+        print("X =", x, "Encrypted text: ", end='')
         for i in result_text: print(i, "", end="")
 
     if operation == 2:
+
+        x = int(input("Enter X: "))
 
         ab_list: List[int] = text.split()
         pairs = [int(i) for i in ab_list]
@@ -243,7 +245,7 @@ def RSA(operation, text):
         phi = (p - 1) * (q - 1)
         e = int(input(f" - Enter 1 < E < {phi}: ")) if len(text) < 1000 else phi
 
-        while gcd(e, phi) != 1 or e > phi:
+        while gcd(e, phi) != 1 or e >= phi or e <= 1:
             e: int = sympy.randprime(3, phi)
 
         digit_text = digitization(text)
@@ -251,6 +253,7 @@ def RSA(operation, text):
 
         for i in range(len(digit_text)):
             ciphertext.append((digit_text[i] ** e) % n)
+
         print("N = ", n, ", E = ", e, sep='')
         print("Encrypted text: ", end='')
         for i in ciphertext: print(i, "", end='')
@@ -306,13 +309,13 @@ def ECC(operation, text):
 
 ########################_TEST_MODE_########################
         """
-        k = 5
-        g = list(map(int, input(" - Enter G: ").split()))
+        k = 4
         d_b = composition(g, c_b, a, p_m)
         r = composition(g, k, a, p_m)
         p = composition(d_b, k, a, p_m)
         print("Encrypted text: ", "(", r[0], ", ", r[1], ") ", ((int(text) * p[0]) % p_m), sep='', end='')
         """
+
 ###########################################################
 
     if operation == 2:
