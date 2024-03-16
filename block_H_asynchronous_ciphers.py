@@ -297,7 +297,7 @@ def ECC(operation, text):
 
         for i in range(len(digit_text)):
 
-            k = random.randint(2, q_m - 1)
+            k = random.randint(1, q_m - 1)
             d_b = composition(g, c_b, a, p_m)
             r = composition(g, k, a, p_m)
             p = composition(d_b, k, a, p_m)

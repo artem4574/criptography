@@ -10,7 +10,8 @@ def digitization(open_text):
     dig_text = ""
     for i in range(len(open_text)):
         cipher = (list_alph.index(open_text[i]))
-        dig_text += (format(int(cipher), '05b'))
+        cipher = int(cipher)
+        dig_text += (format(cipher, '05b'))
     return dig_text
 
 
