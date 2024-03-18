@@ -1,8 +1,8 @@
 import random
 import sympy
-import sys
 from typing import List
 from math import gcd
+from block_A_simple_replacement_ciphers import decryption_format
 
 alphabet: str = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
 
@@ -140,22 +140,6 @@ def comparisons(a, b, m):
 def digitization(open_text):
     result = []
     for i in range(len(open_text)): result.append(alphabet.index(open_text[i]) + 1)
-    return result
-
-
-def decryption_format(dec_text):
-
-    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
-    result = dec_text[0].upper() + dec_text[1:]
-    result_list = list(result)
-
-    for i in range(len(result_list) - 3):
-        if result_list[i] == ".":
-            result_list[i + 2] = result_list[i + 2].upper()
-
-    result = ""
-    for char in result_list: result += char
-
     return result
 
 
@@ -345,7 +329,8 @@ def ECC(operation, text):
         """
 ###########################################################
 
-
+'''
+import sys
 while True:
 
     print("""Select a cipher: 
@@ -406,3 +391,4 @@ while True:
     if select == 3:
         ECC(operation, text.lower())
         print()
+'''

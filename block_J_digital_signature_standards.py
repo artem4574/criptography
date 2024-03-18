@@ -1,5 +1,4 @@
 import random
-import sys
 from math import gcd
 
 
@@ -207,6 +206,8 @@ def GOSTR_34_10_2012(operation, text):
             print("Error in signature!")
 
 
+'''
+import sys
 while True:
 
     print("""Select a DS algorithm: 
@@ -261,3 +262,4 @@ while True:
     if select == 2:
         GOSTR_34_10_2012(operation, text.lower())
         print()
+'''

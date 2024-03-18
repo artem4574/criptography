@@ -1,6 +1,6 @@
-import sys
 import random
-
+from block_A_simple_replacement_ciphers import decryption_format
+from block_A_simple_replacement_ciphers import listalf as list_alph
 
 s_block = [
     [0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76],
@@ -49,10 +49,6 @@ pi = [[12, 4, 6, 2, 10, 5, 11, 9, 14, 8, 13, 7, 0, 3, 15, 1],
       [5, 13, 15, 6, 9, 2, 12, 10, 11, 7, 8, 1, 4, 3, 14, 0],
       [8, 14, 2, 5, 6, 9, 1, 12, 15, 4, 11, 0, 13, 10, 3, 7],
       [1, 7, 14, 13, 0, 5, 8, 3, 4, 15, 10, 6, 9, 12, 11, 2]]
-
-
-list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
-             "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
 
 
 def word_rot(x):
@@ -268,20 +264,6 @@ def magma_key_schedule(k):
     return keys
 
 
-def decryption_format(dec_text):
-    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
-    result = dec_text[0].upper() + dec_text[1:]
-    result_list = list(result)
-    for i in range(len(result_list) - 3):
-        if result_list[i] == ".":
-            result_list[i + 2] = result_list[i + 2].upper()
-
-    result = ""
-    for char in result_list: result += char
-
-    return result
-
-
 def aes(operation, text):
 
     key = b'000102030405060708090a0b0c0d0e0f'
@@ -353,6 +335,8 @@ def magma(operation, text):
         print()
 
 
+'''
+import sys
 while True:
 
     print("""Select a cipher: 
@@ -408,3 +392,4 @@ while True:
     if select == 2:
         aes(operation, text.lower())
         print()
+'''

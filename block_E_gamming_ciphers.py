@@ -1,9 +1,6 @@
-import sys
 import math
-
-
-list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
-             "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
+from block_A_simple_replacement_ciphers import decryption_format
+from block_A_simple_replacement_ciphers import listalf as list_alph
 
 
 def digitization_for_Shannon(open_text):
@@ -24,20 +21,6 @@ def generate_gamma_for_Shannon(a, c, t0, length):
         gamma.append((a * t + c) % 32)
         t = (a * t + c) % 32
     return gamma
-
-
-def decryption_format(dec_text):
-    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
-    result = dec_text[0].upper() + dec_text[1:]
-    result_list = list(result)
-    for i in range(len(result_list) - 3):
-        if result_list[i] == ".":
-            result_list[i + 2] = result_list[i + 2].upper()
-
-    result = ""
-    for char in result_list: result += char
-
-    return result
 
 
 def Shannon_notebook(operation, text):
@@ -80,11 +63,12 @@ def Shannon_notebook(operation, text):
 
         answer = decryption_format(open_text)
 
-        print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        print("Decrypted text: ", answer)
         print()
 
 
+'''
+import sys
 while True:
 
     print("""Select a cipher: 
@@ -137,3 +121,4 @@ while True:
     if select == 1:
         Shannon_notebook(operation, text.lower())
         print()
+'''

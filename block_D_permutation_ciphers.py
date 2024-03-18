@@ -1,21 +1,5 @@
-import sys
-import math
-
-list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
-             "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
-
-
-def decryption_format(dec_text):
-    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
-    result = dec_text[0].upper() + dec_text[1:]
-    result_list = list(result)
-    for i in range(len(result_list) - 3):
-        if result_list[i] == ".":
-            result_list[i + 2] = result_list[i + 2].upper()
-    result = ""
-    for char in result_list:
-        result += char
-    return result
+from block_A_simple_replacement_ciphers import decryption_format
+from block_A_simple_replacement_ciphers import listalf as list_alph
 
 
 def mirror_matrix_1(matrix):
@@ -34,7 +18,9 @@ def mirror_matrix_2(matrix):
 
 
 def Cardano_grid(operation, text):
+
     result_text = ""
+
     if len(text) > 60:
         grid_10 = [
             [0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
@@ -133,10 +119,7 @@ def Cardano_grid(operation, text):
 
             answer = decryption_format(result_text)
 
-            answer = answer[:answer.rfind('.') + 1]
-
-            print("Decrypted text: ", end=' ')
-            for i in answer: print(i, end='')
+            print("Decrypted text: ", answer[:answer.rfind('.') + 1])
             print()
 
     else:
@@ -309,11 +292,12 @@ def vertical_permutation(operation, text):
 
         answer = decryption_format(result_text)
 
-        print("Decrypted text: ", end=' ')
-        for i in answer: print(i, end='')
+        print("Decrypted text: ", answer)
         print()
 
 
+'''
+import sys
 while True:
 
     print("""Select a cipher: 
@@ -371,3 +355,4 @@ while True:
     if select == 2:
         vertical_permutation(operation, text.lower())
         print()
+'''

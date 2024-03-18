@@ -1,7 +1,6 @@
-from typing import List
-import sys
 import sympy
 from math import gcd
+from typing import List
 
 
 def hash_quad(text, p):
@@ -70,7 +69,7 @@ def comparisons(a, b, m):
         return int(((-1)**(n-1) * p[-2] * b) % m)
 
 
-def RSA(operation, text):
+def RSA_sign(operation, text):
 
     if operation == 1:
 
@@ -109,7 +108,7 @@ def RSA(operation, text):
             print("Error in signature calculating")
 
 
-def ElGamal(operation, text):
+def ElGamal_sign(operation, text):
 
     p = int(input(" - Enter P(prime): "))
     if not is_prime(p) or type(p) != int:
@@ -150,6 +149,8 @@ def ElGamal(operation, text):
             print("Error in signature!")
 
 
+'''
+import sys
 while True:
 
     print("""Select a DS algorithm: 
@@ -198,9 +199,10 @@ while True:
             text = str1_split1 + 'прб' + str1_split2
 
     if select == 1:
-        RSA(operation, text.lower())
+        RSA_sign(operation, text.lower())
         print()
 
     if select == 2:
-        ElGamal(operation, text.lower())
+        ElGamal_sign(operation, text.lower())
         print()
+'''

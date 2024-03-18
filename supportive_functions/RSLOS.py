@@ -24,7 +24,6 @@ def grouper(n, iterable, fillvalue=None):
 
 
 
-
 def digitization_for_rslos(open_text):
     dig_text = ""
     for i in range(len(open_text)):
@@ -38,10 +37,8 @@ def undigitization_for_rslos(d_text):
     d_text = ' '.join(''.join(g) for g in grouper(6, d_text, ''))
     d_array = d_text.split()
     open_text = ""
-    # for i in d_array: print(i, " ", end='')
     for i in d_array:
         open_text += (list_alph[int(str(int(i)), 2) - 1])
-        # print(int(str(int(i)), 2), " ", end='')
     return open_text
 
 
@@ -104,7 +101,6 @@ def RSLOS(operation, text):
         dig_text = gamming((text.replace(' ', '')), reg1, reg2, scrambler1, scrambler2)
 
         print("Decrypted text: ", undigitization_for_rslos(dig_text))
-
 
 
 while True:

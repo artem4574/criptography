@@ -1,34 +1,20 @@
 from collections import OrderedDict
 import numpy as np
-import sys
-
-
-def decryption_format(dec_text):
-
-    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
-    result = dec_text[0].upper() + dec_text[1:]
-    result_list = list(result)
-
-    for i in range(len(result_list) - 3):
-        if result_list[i] == ".": result_list[i + 2] = result_list[i + 2].upper()
-
-    result = ""
-    for char in result_list: result += char
-
-    return result
+from block_A_simple_replacement_ciphers import decryption_format
 
 
 def generate_table(keyword):
+
     start_alphabet = "абвгдежзиклмнопрстуфхцчшщъыэюя"
     keyword, count = "".join(keyword.split()), 0
     string_table = "".join(OrderedDict.fromkeys(keyword + start_alphabet))
     table = [[0] * 6 for _ in range(5)]
+
     for i in range(5):
         for j in range(6):
             table[i][j] = string_table[count]
             count += 1
-            '''print(table[i][j], end='')
-        print()'''
+
     return table
 
 
@@ -40,23 +26,25 @@ def find_index(array, element):
         return None
 
 
-def Playfair_cipher(operation, text, answer=""):
+def Playfair_cipher(operation, text):
 
     key: str = str(input('Enter keyword(must not contain duplicate letters): '))
     if len(key) != len(set(key)):
         print("Wrong key!")
         exit()
-
+    text = text.replace('й', 'и').replace('ь', 'ъ').replace('ё', 'е').replace(' ', '')
     table = generate_table(key)
+    answer = ''
 
-    if operation == 1:  # encryption
+    if operation == 1:
 
         for i in range(len(text) - 1):
             if text[i] == text[i + 1]:
-                text = text[:i + 1] + "ф" + text[i + 1:]  # избыточность для повторяющихся букв
+                text = text[:i + 1] + "ф" + text[i + 1:]
 
-        if len(text) % 2 != 0: text += "ф"                # избыточность для нечетной длины последовательности
-        print(text)
+        if len(text) % 2 != 0:
+            text += "ф"
+
         i = 0
 
         while i < len(text):
@@ -85,8 +73,9 @@ def Playfair_cipher(operation, text, answer=""):
                 continue
 
         print("Encrypted text: ", ' '.join(answer[i: i + 5] for i in range(0, len(answer) - 1 if len(text) % 2 == 1 else len(answer), 5)))
+        print()
 
-    if operation == 2:                                            # decryption
+    if operation == 2:
 
         for i in range(0, len(text) - 1, 2):
 
@@ -114,9 +103,10 @@ def Playfair_cipher(operation, text, answer=""):
         result = decryption_format(answer)
 
         print("Decrypted text: ", result[:-1] if result[-1] == 'ф' else result, end='')
+        print()
 
 
-def matrix_cipher(operation, text, answer=""):
+def matrix_cipher(operation, text):
 
     alphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
     key_matrix = np.zeros((3, 3))
@@ -125,6 +115,8 @@ def matrix_cipher(operation, text, answer=""):
     for rows in range(3):
         row = input().split()
         for cols in range(3): key_matrix[rows, cols] = int(row[cols])
+
+    answer = ""
 
     if np.linalg.det(key_matrix) not in [0, 6.66133814775094e-16]:
 
@@ -143,6 +135,7 @@ def matrix_cipher(operation, text, answer=""):
                 for k in range(3): answer += str(int(l_matrix[k, 0])) + " "
 
             print("Encrypted text: ", answer)
+            print()
 
         else:                                                              
 
@@ -153,24 +146,30 @@ def matrix_cipher(operation, text, answer=""):
 
                 cur_matrix = np.zeros((3, 1))
 
-                for j in range(3): cur_matrix[j, 0] = int(ciphertext[j + i])
+                for j in range(3):
+                    cur_matrix[j, 0] = int(ciphertext[j + i])
 
                 l_matrix = np.matmul(key_matrix, cur_matrix)
 
-                for pos in range(3): enc_text.append(round(l_matrix[pos, 0]) - 1)
+                for pos in range(3):
+                    enc_text.append(round(l_matrix[pos, 0]) - 1)
 
-            for i in range(len(enc_text)): answer += alphabet[int(enc_text[i])]
+            for i in range(len(enc_text)):
+                answer += alphabet[int(enc_text[i])]
 
             answer = decryption_format(answer)
             while answer[-1] == "ф": answer = answer[:-1]
 
             print("Decrypted text: ", answer, end='')
+            print()
 
     else:
         print("Error! Determinant = 0")
         exit()
 
 
+'''
+import sys
 while True:
 
     print("""Select a cipher: 
@@ -222,9 +221,10 @@ while True:
         text = text.replace(' ', '')
 
     if select == 1:
-        Playfair_cipher(operation, text.lower().replace('й', 'и').replace('ь', 'ъ').replace('ё', 'е'))
+        Playfair_cipher(operation, text.lower())
         print()
 
     if select == 2:
         matrix_cipher(operation, text.lower())
         print()
+'''
