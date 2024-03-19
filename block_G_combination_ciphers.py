@@ -265,9 +265,13 @@ def magma_key_schedule(k):
 
 
 def aes(operation, text):
+    # key = '000102030405060708090a0b0c0d0e0f'
+    key = str(input('Enter a 128-bit key: '))
+    if len(key) != 32:
+        print("Key should be 128-bit!")
+        exit()
 
-    key = b'000102030405060708090a0b0c0d0e0f'
-    a = AES(key)
+    a = AES(bytes(key, 'utf-8'))
 
     if operation == 1:
 
@@ -288,10 +292,13 @@ def aes(operation, text):
 def magma(operation, text):
 
     keys = magma_key_schedule(int(input('Enter a 256-bit key: '), 16))
-
+    if len(keys) != 64:
+        print("Key should be 256-bit!")
+        exit()
     # keys = magma_key_schedule(int('ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff', 16))
 
     if operation == 1:
+
         ciphertext = ''
 
         while len(text) > 0:
@@ -333,8 +340,6 @@ def magma(operation, text):
 
         print("Decrypted text: ", answer[:(answer.rfind('.')) + 1])
         print()
-
-
 '''
 import sys
 while True:
