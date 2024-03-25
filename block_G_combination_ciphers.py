@@ -150,9 +150,9 @@ def inv_mix_columns(state):
 class AES(object):
     def __init__(self, K: bytes):
         self.Nk, self.Nb, self.Nr = 4, 4, 10
-        self.K = K[:self.Nk * 8]
+        self.K = K[:self.Nk * 4]
 
-        while len(self.K) < self.Nk * 8:
+        while len(self.K) < self.Nk * 4:
             self.K += b'\x00'
         self.exp = self.key_expansion()
 
@@ -286,16 +286,18 @@ def aes(operation, text):
         decrypted_text = a.Decrypt(bytes.fromhex(text))
 
         answer = decryption_format(decrypted_text.decode('utf-8'))
-        print("Decrypted text: ", answer)
+        print("Decrypted text: ", answer[:(answer.rfind('.')) + 1])
 
 
 def magma(operation, text):
-
-    keys = magma_key_schedule(int(input('Enter a 256-bit key: '), 16))
+    """
+    keys = input('Enter a 256-bit key: ')
     if len(keys) != 64:
         print("Key should be 256-bit!")
         exit()
-    # keys = magma_key_schedule(int('ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff', 16))
+    keys = magma_key_schedule(int(input('Enter a 256-bit key: '), 16))
+    """
+    keys = magma_key_schedule(int('ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff', 16))
 
     if operation == 1:
 
@@ -304,7 +306,7 @@ def magma(operation, text):
         while len(text) > 0:
 
             if len(text) < 4:
-                for i in range(4 - len(text)):
+                for _ in range(4 - len(text)):
                     text += str(list_alph[random.randint(0, 31)])
 
             text_16 = int(text[:4].encode('utf-8').hex(), 16)
@@ -340,7 +342,8 @@ def magma(operation, text):
 
         print("Decrypted text: ", answer[:(answer.rfind('.')) + 1])
         print()
-'''
+
+
 import sys
 while True:
 
@@ -397,4 +400,3 @@ while True:
     if select == 2:
         aes(operation, text.lower())
         print()
-'''
