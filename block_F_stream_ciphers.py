@@ -1,21 +1,26 @@
+import sys
 from itertools import zip_longest
-from block_A_simple_replacement_ciphers import decryption_format
-from block_A_simple_replacement_ciphers import listalf as list_alph
+
+
+list_alph = ["а", "б", "в", "г", "д", "е", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
+             "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
 
 
 def digitization(open_text):
     dig_text = ""
     for i in range(len(open_text)):
         cipher = (list_alph.index(open_text[i]))
-        dig_text += (format(int(cipher), '05b'))
+        cipher = int(cipher)
+        dig_text += (format(cipher, '05b'))
     return dig_text
 
 
-def undigitization(d_text):
-    def grouper(n, iterable, fill_value=None):
-        args = [iter(iterable)] * n
-        return zip_longest(fillvalue=fill_value, *args)
+def grouper(n, iterable, fill_value=None):
+    args = [iter(iterable)] * n
+    return zip_longest(fillvalue=fill_value, *args)
 
+
+def undigitization(d_text):
     d_text = ' '.join(''.join(g) for g in grouper(5, d_text, ''))
     d_array = d_text.split()
     open_text = ""
@@ -68,14 +73,22 @@ def generate_gamma(key, frame_num):
         queue_z = queue_z[1:]
 
     for _ in range(100):
-        new_bit = register_x[13] ^ register_x[16] ^ register_x[17] ^ register_x[18]
-        register_x = register_x[1:] + [new_bit]
 
-        new_bit = register_y[20] ^ register_y[21]
-        register_y = register_y[1:] + [new_bit]
+        majority = ((register_x[10] and register_y[11]) or
+                    (register_x[10] and register_z[12]) or
+                    (register_y[11] and register_z[12]))
 
-        new_bit = register_z[7] ^ register_z[20] ^ register_z[21] ^ register_z[22]
-        register_z = register_z[1:] + [new_bit]
+        if register_x[10] == majority:
+            new_bit = register_x[5] ^ register_x[2] ^ register_x[1] ^ register_x[0]
+            register_x = register_x[1:] + [new_bit]
+
+        if register_y[11] == majority:
+            new_bit = register_y[1] ^ register_y[0]
+            register_y = register_y[1:] + [new_bit]
+
+        if register_z[12] == majority:
+            new_bit = register_z[15] ^ register_z[2] ^ register_z[1] ^ register_z[0]
+            register_z = register_z[1:] + [new_bit]
 
 ############################_GAMMA_GENERATE_############################
 
@@ -83,23 +96,39 @@ def generate_gamma(key, frame_num):
 
     for _ in range(114):
 
-        majority = (register_x[8] + register_y[10] + register_z[10]) > 1
+        majority = ((register_x[10] and register_y[11]) or
+                    (register_x[10] and register_z[12]) or
+                    (register_y[11] and register_z[12]))
 
-        if register_x[8] == majority:
-            new_bit = register_x[13] ^ register_x[16] ^ register_x[17] ^ register_x[18]
+        if register_x[10] == majority:
+            new_bit = register_x[5] ^ register_x[2] ^ register_x[1] ^ register_x[0]
             register_x = [new_bit] + register_x[:-1]
 
-        if register_y[10] == majority:
-            new_bit = register_y[20] ^ register_y[21]
+        if register_y[11] == majority:
+            new_bit = register_y[1] ^ register_y[0]
             register_y = [new_bit] + register_y[:-1]
 
-        if register_z[10] == majority:
-            new_bit = register_z[7] ^ register_z[20] ^ register_z[21] ^ register_z[22]
+        if register_z[12] == majority:
+            new_bit = register_z[15] ^ register_z[2] ^ register_z[1] ^ register_z[0]
             register_z = [new_bit] + register_z[:-1]
 
-        key_stream.append(register_x[18] ^ register_y[21] ^ register_z[22])
+        key_stream.append(register_x[0] ^ register_y[0] ^ register_z[0])
 
     return key_stream
+
+
+def decryption_format(dec_text):
+    dec_text = dec_text.replace('тчк', '.').replace('зпт', ',').replace('прб', ' ')
+    result = dec_text[0].upper() + dec_text[1:]
+    result_list = list(result)
+    for i in range(len(result_list) - 3):
+        if result_list[i] == ".":
+            result_list[i + 2] = result_list[i + 2].upper()
+
+    result = ""
+    for char in result_list: result += char
+
+    return result
 
 
 def A5_1(operation, text):
@@ -136,10 +165,13 @@ def A5_1(operation, text):
 
         while len(text) > 0:
 
+            binary_xor = []
+
             keystream = generate_gamma(key, num)
 
             for i in range(114 if len(text) > 114 else len(text)):
-                dec_text += str(int(text[i]) ^ keystream[i])
+                binary_xor.insert(i, int(text[i]))
+                dec_text += str(binary_xor[i] ^ keystream[i])
 
             text = text[114:]
 
@@ -154,8 +186,6 @@ def A5_1(operation, text):
         print()
 
 
-'''
-import sys
 while True:
 
     print("""Select a cipher: 
@@ -209,5 +239,5 @@ while True:
     if select == 1:
         A5_1(operation, text.lower())
         print()
-'''
+
 # 64-bit key: 0101001000011010110001110001100100101001000000110111111010110111
