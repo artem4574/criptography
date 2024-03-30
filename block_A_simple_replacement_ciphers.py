@@ -16,11 +16,7 @@ def decryption_format(dec_text):
     for i in range(len(result_list) - 3):
         if result_list[i] == ".":
             result_list[i + 2] = result_list[i + 2].upper()
-
-    result = ""
-    for char in result_list: result += char
-
-    return result
+    return ''.join(result_list)
 
 
 def Caesar(operation, text):

@@ -17,12 +17,13 @@ def classic_euclid(num_1, num_2):
             num_2 %= num_1
     return num_1 or num_2
 
+
 def egcd(a, b):
     if a == 0:
-        return (b, 0, 1)
+        return b, 0, 1
     else:
         g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
+        return g, x - (b // a) * y, y
 
 
 def comparisons(a, b, m):
@@ -75,4 +76,4 @@ def hash(text, p):
     for i in range(len(text)):
         tec_h = ((tec_h + alphabet.index(text[i]) + 1) ** 2) % p
     return tec_h
-print(hash('одиндуракможетбольшеспрашиватьзптчемдесятьумныхответяттчк',11))
+# print(hash('одиндуракможетбольшеспрашиватьзптчемдесятьумныхответяттчк',11))

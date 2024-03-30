@@ -344,7 +344,7 @@ def magma(operation, text):
         print()
 
 
-import sys
+'''import sys
 while True:
 
     print("""Select a cipher: 
@@ -399,4 +399,4 @@ while True:
 
     if select == 2:
         aes(operation, text.lower())
-        print()
+        print()'''
